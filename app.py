@@ -220,7 +220,7 @@ def cart():
         if p:
             items.append({"product": p, "qty": data["qty"],
                           "subtotal": p.price * data["qty"]})
-    return render_template("cart.html", items=items, total=cart_total())
+    return render_template("cart.html", items=items, cart_items=items, total=cart_total())
 
 @app.route("/cart/add/<int:pid>", methods=["POST"])
 def cart_add(pid):
