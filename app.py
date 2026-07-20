@@ -15,6 +15,9 @@ from flask_sqlalchemy import SQLAlchemy
 BASE_DIR = Path(__file__).parent
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY", secrets.token_hex(32))
+app.config["SESSION_COOKIE_SAMESITE"] = "Lax"
+app.config["SESSION_COOKIE_SECURE"]   = False
+app.config["SESSION_COOKIE_HTTPONLY"] = True
 app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get(
     "DATABASE_URL", f"sqlite:///{BASE_DIR / 'shop.db'}"
 ).replace("postgres://", "postgresql://")
@@ -226,8 +229,9 @@ def cart_add(pid):
     key  = str(pid)
     cart[key] = {"qty": cart.get(key, {}).get("qty", 0) + qty}
     session["cart"] = cart
+    session.modified = True
     flash("Ajouté au panier ✓", "success")
-    return redirect(request.referrer or url_for("products"))
+    return redirect(url_for("cart"))
 
 @app.route("/cart/remove/<int:pid>")
 def cart_remove(pid):
