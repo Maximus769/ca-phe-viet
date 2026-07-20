@@ -1,0 +1,446 @@
+{% extends "base.html" %}
+
+{% block title %}{{ product.name }} — Cà Phê Việt{% endblock %}
+
+{% block content %}
+
+<!-- ============================================================
+     BREADCRUMB
+============================================================ -->
+<div style="background:var(--brand-cream); border-bottom:1px solid rgba(74,44,23,0.1);">
+  <div class="container py-3">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb mb-0" style="font-size:0.82rem;">
+        <li class="breadcrumb-item">
+          <a href="{{ url_for('index') }}" style="color:var(--brand-gold); text-decoration:none;">Accueil</a>
+        </li>
+        <li class="breadcrumb-item">
+          <a href="{{ url_for('products') }}" style="color:var(--brand-gold); text-decoration:none;">Produits</a>
+        </li>
+        <li class="breadcrumb-item active" style="color:var(--text-muted);">{{ product.name }}</li>
+      </ol>
+    </nav>
+  </div>
+</div>
+
+<!-- ============================================================
+     SECTION PRINCIPALE PRODUIT
+============================================================ -->
+<section style="padding: 56px 0; background:#fff;">
+  <div class="container">
+    <div class="row g-5 align-items-start">
+
+      <!-- IMAGE -->
+      <div class="col-lg-6">
+        <div style="position:relative; border-radius:2px; overflow:hidden;
+                    box-shadow: 0 8px 32px rgba(74,44,23,0.14);">
+          <img src="{{ product.image if product.image else '/static/images/product-placeholder.jpg' }}"
+               alt="{{ product.name }}"
+               id="main-product-img"
+               style="width:100%; max-height:520px; object-fit:cover;">
+          {% if product.badge %}
+          <span class="position-absolute top-0 start-0 m-3"
+                style="background:var(--brand-gold); color:var(--brand-dark);
+                       font-size:0.78rem; font-weight:700; letter-spacing:0.1em;
+                       padding: 4px 12px; text-transform:uppercase;">
+            {{ product.badge }}
+          </span>
+          {% endif %}
+        </div>
+
+        <!-- Thumbnails placeholder (extensible) -->
+        {% if product.gallery %}
+        <div class="d-flex gap-2 mt-3">
+          {% for img_url in product.gallery %}
+          <img src="{{ img_url }}" alt="{{ product.name }}"
+               onclick="document.getElementById('main-product-img').src = this.src"
+               style="width:72px; height:72px; object-fit:cover; cursor:pointer;
+                      border: 2px solid transparent; border-radius:2px; transition:border-color 0.2s;"
+               onmouseover="this.style.borderColor='var(--brand-gold)'"
+               onmouseout="this.style.borderColor='transparent'">
+          {% endfor %}
+        </div>
+        {% endif %}
+      </div>
+
+      <!-- INFOS PRODUIT -->
+      <div class="col-lg-6">
+
+        <p class="section-label mb-2">{{ product.category if product.category else 'Café' }}</p>
+        <h1 style="font-size:clamp(1.8rem, 3vw, 2.8rem); color:var(--brand-brown); line-height:1.2; margin-bottom:0.5rem;">
+          {{ product.name }}
+        </h1>
+
+        <!-- Étoiles résumé -->
+        {% if reviews %}
+        {% set avg = (reviews | sum(attribute='rating') / reviews|length) | round(1) %}
+        <div class="d-flex align-items-center gap-2 mb-3">
+          <div style="color:var(--brand-gold);">
+            {% for i in range(1, 6) %}
+              {% if i <= avg|int %}★{% else %}☆{% endif %}
+            {% endfor %}
+          </div>
+          <span style="font-size:0.85rem; color:var(--text-muted);">
+            {{ avg }} / 5 &nbsp;·&nbsp; {{ reviews|length }} avis
+          </span>
+        </div>
+        {% endif %}
+
+        <div class="divider-gold"></div>
+
+        <!-- Prix -->
+        <div class="mb-4">
+          <span style="font-family:'Cormorant Garamond',serif; font-size:2.2rem; font-weight:700; color:var(--brand-brown);">
+            {{ "%.2f"|format(product.price) }} €
+          </span>
+          {% if product.price_per_kg %}
+          <span style="font-size:0.82rem; color:var(--text-muted); margin-left:0.5rem;">
+            ({{ "%.2f"|format(product.price_per_kg) }} €/kg)
+          </span>
+          {% endif %}
+        </div>
+
+        <!-- Description courte -->
+        <p style="color:var(--text-muted); line-height:1.9; font-size:0.95rem; margin-bottom:1.5rem;">
+          {{ product.short_description if product.short_description else product.description }}
+        </p>
+
+        <!-- Attributs rapides -->
+        {% if product.origin or product.roast or product.weight %}
+        <div class="d-flex flex-wrap gap-3 mb-4">
+          {% if product.origin %}
+          <div style="font-size:0.82rem; background:var(--brand-light); padding:6px 14px; border-left:3px solid var(--brand-gold);">
+            <span style="color:var(--text-muted);">Origine :</span>
+            <strong style="color:var(--brand-brown); margin-left:4px;">{{ product.origin }}</strong>
+          </div>
+          {% endif %}
+          {% if product.roast %}
+          <div style="font-size:0.82rem; background:var(--brand-light); padding:6px 14px; border-left:3px solid var(--brand-gold);">
+            <span style="color:var(--text-muted);">Torréfaction :</span>
+            <strong style="color:var(--brand-brown); margin-left:4px;">{{ product.roast }}</strong>
+          </div>
+          {% endif %}
+          {% if product.weight %}
+          <div style="font-size:0.82rem; background:var(--brand-light); padding:6px 14px; border-left:3px solid var(--brand-gold);">
+            <span style="color:var(--text-muted);">Poids :</span>
+            <strong style="color:var(--brand-brown); margin-left:4px;">{{ product.weight }}</strong>
+          </div>
+          {% endif %}
+        </div>
+        {% endif %}
+
+        <!-- Formulaire ajout panier -->
+        <form method="POST" action="{{ url_for('cart_add', pid=product.id) }}" class="mb-4">
+          <div class="d-flex align-items-center gap-3 flex-wrap">
+            <div class="d-flex align-items-center"
+                 style="border: 2px solid var(--brand-brown); width:fit-content;">
+              <button type="button" id="qty-minus"
+                      style="background:none; border:none; width:40px; height:44px;
+                             font-size:1.2rem; color:var(--brand-brown); cursor:pointer;">−</button>
+              <input type="number" name="qty" id="qty-input" value="1" min="1" max="{{ product.stock if product.stock else 99 }}"
+                     style="width:52px; text-align:center; border:none; outline:none;
+                            font-family:'Cormorant Garamond',serif; font-size:1.1rem;
+                            color:var(--brand-brown); font-weight:600;">
+              <button type="button" id="qty-plus"
+                      style="background:none; border:none; width:40px; height:44px;
+                             font-size:1.2rem; color:var(--brand-brown); cursor:pointer;">+</button>
+            </div>
+            <button type="submit" class="btn-brand btn px-4 py-3 flex-grow-1">
+              <i class="bi bi-bag-plus me-2"></i>Ajouter au panier
+            </button>
+          </div>
+          {% if product.stock is defined and product.stock == 0 %}
+          <p class="mt-2 mb-0" style="color:#c0392b; font-size:0.85rem;">
+            <i class="bi bi-x-circle me-1"></i>Produit en rupture de stock
+          </p>
+          {% elif product.stock is defined and product.stock <= 10 %}
+          <p class="mt-2 mb-0" style="color:#e67e22; font-size:0.85rem;">
+            <i class="bi bi-exclamation-triangle me-1"></i>Seulement {{ product.stock }} unités disponibles
+          </p>
+          {% endif %}
+        </form>
+
+        <!-- Livraison info -->
+        <div style="background:var(--brand-light); padding:1rem 1.2rem; border-radius:2px;">
+          <div class="d-flex gap-3 align-items-start" style="font-size:0.85rem; color:var(--text-muted);">
+            <i class="bi bi-truck mt-1" style="color:var(--brand-gold); font-size:1.1rem;"></i>
+            <div>
+              <strong style="color:var(--brand-brown);">Livraison estimée :</strong> 3–5 jours ouvrés<br>
+              <span style="font-size:0.8rem;">Offerte dès 40 € d'achat · Expédition sous 24h</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     DESCRIPTION COMPLÈTE (onglets)
+============================================================ -->
+<section style="padding: 40px 0; background:var(--brand-light);">
+  <div class="container">
+
+    <!-- Onglets -->
+    <ul class="nav nav-tabs mb-4" id="productTabs">
+      <li class="nav-item">
+        <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#tab-desc"
+                style="font-family:'Inter',sans-serif; font-size:0.82rem; letter-spacing:0.08em;
+                       text-transform:uppercase; font-weight:600; color:var(--text-muted);
+                       border-radius:0; border-bottom:none;">
+          Description
+        </button>
+      </li>
+      <li class="nav-item">
+        <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-details"
+                style="font-family:'Inter',sans-serif; font-size:0.82rem; letter-spacing:0.08em;
+                       text-transform:uppercase; font-weight:600; color:var(--text-muted);
+                       border-radius:0; border-bottom:none;">
+          Détails
+        </button>
+      </li>
+      <li class="nav-item">
+        <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-preparation"
+                style="font-family:'Inter',sans-serif; font-size:0.82rem; letter-spacing:0.08em;
+                       text-transform:uppercase; font-weight:600; color:var(--text-muted);
+                       border-radius:0; border-bottom:none;">
+          Préparation
+        </button>
+      </li>
+    </ul>
+
+    <div class="tab-content">
+
+      <!-- Description -->
+      <div class="tab-pane fade show active" id="tab-desc">
+        <div class="row">
+          <div class="col-lg-8">
+            <p style="color:var(--text-muted); line-height:2; font-size:0.95rem;">
+              {{ product.description or 'Aucune description disponible.' }}
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Détails techniques -->
+      <div class="tab-pane fade" id="tab-details">
+        <div class="row">
+          <div class="col-lg-6">
+            <table class="table" style="font-size:0.88rem;">
+              <tbody>
+                <tr>
+                  <td style="color:var(--text-muted); width:40%;">Variété</td>
+                  <td style="color:var(--brand-brown); font-weight:500;">{{ product.variety if product.variety else 'Robusta' }}</td>
+                </tr>
+                <tr>
+                  <td style="color:var(--text-muted);">Origine</td>
+                  <td style="color:var(--brand-brown); font-weight:500;">{{ product.origin if product.origin else 'Đắk Lắk, Vietnam' }}</td>
+                </tr>
+                <tr>
+                  <td style="color:var(--text-muted);">Altitude</td>
+                  <td style="color:var(--brand-brown); font-weight:500;">{{ product.altitude if product.altitude else '500–800 m' }}</td>
+                </tr>
+                <tr>
+                  <td style="color:var(--text-muted);">Torréfaction</td>
+                  <td style="color:var(--brand-brown); font-weight:500;">{{ product.roast if product.roast else 'Moyenne-foncée' }}</td>
+                </tr>
+                <tr>
+                  <td style="color:var(--text-muted);">Traitement</td>
+                  <td style="color:var(--brand-brown); font-weight:500;">{{ product.process if product.process else 'Voie humide' }}</td>
+                </tr>
+                <tr>
+                  <td style="color:var(--text-muted);">Notes aromatiques</td>
+                  <td style="color:var(--brand-brown); font-weight:500;">{{ product.notes if product.notes else 'Chocolat, caramel, épices' }}</td>
+                </tr>
+                <tr>
+                  <td style="color:var(--text-muted);">Poids net</td>
+                  <td style="color:var(--brand-brown); font-weight:500;">{{ product.weight if product.weight else '250 g' }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Préparation -->
+      <div class="tab-pane fade" id="tab-preparation">
+        <div class="row g-4">
+          <div class="col-md-4">
+            <div class="p-3" style="background:#fff; border-top:3px solid var(--brand-gold);">
+              <h5 style="color:var(--brand-brown);">Phin Vietnamien</h5>
+              <p style="font-size:0.85rem; color:var(--text-muted); line-height:1.8;">
+                Utilisez 20–25 g de café moulu moyen-grossier pour 150 ml d'eau à 92 °C. Laissez infuser 5–8 minutes. Servez avec du lait concentré sucré pour le café sữa đá traditionnel.
+              </p>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="p-3" style="background:#fff; border-top:3px solid var(--brand-gold);">
+              <h5 style="color:var(--brand-brown);">Expresso</h5>
+              <p style="font-size:0.85rem; color:var(--text-muted); line-height:1.8;">
+                Mouture fine, 18–20 g pour une double shot. Pression 9 bars, température 93 °C. Extraction 25–30 secondes. Résultat : corps intense, crema épaisse.
+              </p>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="p-3" style="background:#fff; border-top:3px solid var(--brand-gold);">
+              <h5 style="color:var(--brand-brown);">Cafetière Italienne</h5>
+              <p style="font-size:0.85rem; color:var(--text-muted); line-height:1.8;">
+                Mouture fine-moyenne. Remplissez le compartiment à café sans tasser. Chauffez à feu moyen. Idéal pour retrouver la puissance du Robusta de Đắk Lắk.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     AVIS CLIENTS
+============================================================ -->
+<section style="padding: 56px 0; background:#fff;">
+  <div class="container">
+
+    <div class="row g-5">
+
+      <!-- Liste des avis -->
+      <div class="col-lg-7">
+        <p class="section-label">Ce qu'ils en pensent</p>
+        <h2 class="section-title" style="font-size:1.8rem;">Avis Clients</h2>
+        <div class="divider-gold"></div>
+
+        {% if reviews %}
+
+        <!-- Moyenne globale -->
+        {% set avg = (reviews | sum(attribute='rating') / reviews|length) | round(1) %}
+        <div class="d-flex align-items-center gap-3 mb-4 p-3"
+             style="background:var(--brand-light); border-left:4px solid var(--brand-gold);">
+          <div style="font-family:'Cormorant Garamond',serif; font-size:3rem; font-weight:700; color:var(--brand-brown); line-height:1;">
+            {{ avg }}
+          </div>
+          <div>
+            <div style="color:var(--brand-gold); font-size:1.3rem; letter-spacing:2px;">
+              {% for i in range(1, 6) %}{% if i <= avg|int %}★{% else %}☆{% endif %}{% endfor %}
+            </div>
+            <div style="font-size:0.82rem; color:var(--text-muted);">
+              Basé sur {{ reviews|length }} avis
+            </div>
+          </div>
+        </div>
+
+        <!-- Avis individuels -->
+        {% for review in reviews %}
+        <div class="mb-4 pb-4 {% if not loop.last %}border-bottom{% endif %}"
+             style="border-color: rgba(74,44,23,0.1) !important;">
+          <div class="d-flex justify-content-between align-items-start mb-2">
+            <div>
+              <strong style="color:var(--brand-brown); font-size:0.95rem;">{{ review.author }}</strong>
+              <div style="color:var(--brand-gold); font-size:1rem; line-height:1.4;">
+                {% for i in range(1, 6) %}{% if i <= review.rating %}★{% else %}☆{% endif %}{% endfor %}
+              </div>
+            </div>
+            <span style="font-size:0.78rem; color:var(--text-muted);">
+              {{ review.date.strftime('%d/%m/%Y') if review.date else '' }}
+            </span>
+          </div>
+          <p style="color:var(--text-muted); font-size:0.9rem; line-height:1.75; margin:0;">
+            {{ review.comment }}
+          </p>
+        </div>
+        {% endfor %}
+
+        {% else %}
+        <div style="background:var(--brand-light); padding:2rem; text-align:center; border-radius:2px;">
+          <p style="color:var(--text-muted); margin:0; font-size:0.92rem;">
+            Soyez le premier à laisser un avis sur ce produit !
+          </p>
+        </div>
+        {% endif %}
+      </div>
+
+      <!-- Formulaire d'avis -->
+      <div class="col-lg-5">
+        <div class="p-4" style="background:var(--brand-light); border-top:3px solid var(--brand-brown);">
+          <h3 style="font-size:1.4rem; color:var(--brand-brown); margin-bottom:1rem;">
+            <i class="bi bi-pencil-square me-2" style="color:var(--brand-gold);"></i>
+            Laisser un avis
+          </h3>
+
+          <form method="POST" action="{{ url_for('add_review', pid=product.id) }}">
+
+            <div class="mb-3">
+              <label class="form-label" style="font-size:0.8rem; font-weight:600; letter-spacing:0.08em; text-transform:uppercase; color:var(--brand-brown);">
+                Votre nom <span style="color:#c0392b;">*</span>
+              </label>
+              <input type="text" name="author" required placeholder="Jean Dupont"
+                     class="form-control" style="border-color:rgba(74,44,23,0.25); border-radius:0; font-size:0.9rem;">
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label" style="font-size:0.8rem; font-weight:600; letter-spacing:0.08em; text-transform:uppercase; color:var(--brand-brown);">
+                Email <span style="color:#c0392b;">*</span>
+                <small style="font-weight:400; text-transform:none; letter-spacing:0; color:var(--text-muted);">(non publié)</small>
+              </label>
+              <input type="email" name="email" required placeholder="jean@example.fr"
+                     class="form-control" style="border-color:rgba(74,44,23,0.25); border-radius:0; font-size:0.9rem;">
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label d-block" style="font-size:0.8rem; font-weight:600; letter-spacing:0.08em; text-transform:uppercase; color:var(--brand-brown);">
+                Note <span style="color:#c0392b;">*</span>
+              </label>
+              <div class="d-flex gap-3 flex-wrap">
+                {% for val in [1, 2, 3, 4, 5] %}
+                <div class="form-check form-check-inline m-0">
+                  <input class="form-check-input" type="radio" name="rating"
+                         id="star{{ val }}" value="{{ val }}" {% if val == 5 %}checked{% endif %}
+                         style="accent-color: var(--brand-gold);">
+                  <label class="form-check-label" for="star{{ val }}"
+                         style="font-size:0.88rem; color:var(--text-muted);">
+                    {{ val }}★
+                  </label>
+                </div>
+                {% endfor %}
+              </div>
+            </div>
+
+            <div class="mb-4">
+              <label class="form-label" style="font-size:0.8rem; font-weight:600; letter-spacing:0.08em; text-transform:uppercase; color:var(--brand-brown);">
+                Commentaire <span style="color:#c0392b;">*</span>
+              </label>
+              <textarea name="comment" rows="4" required
+                        placeholder="Partagez votre expérience avec ce café…"
+                        class="form-control"
+                        style="border-color:rgba(74,44,23,0.25); border-radius:0; font-size:0.9rem; resize:vertical;"></textarea>
+            </div>
+
+            <button type="submit" class="btn-brand btn w-100 py-3">
+              <i class="bi bi-send me-2"></i>Publier mon avis
+            </button>
+          </form>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  // Qty +/- buttons
+  const qtyInput = document.getElementById('qty-input');
+  document.getElementById('qty-minus').addEventListener('click', function() {
+    const val = parseInt(qtyInput.value);
+    if (val > 1) qtyInput.value = val - 1;
+  });
+  document.getElementById('qty-plus').addEventListener('click', function() {
+    const max = parseInt(qtyInput.getAttribute('max')) || 99;
+    const val = parseInt(qtyInput.value);
+    if (val < max) qtyInput.value = val + 1;
+  });
+</script>
+{% endblock %}

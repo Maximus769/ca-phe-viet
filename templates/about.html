@@ -1,0 +1,285 @@
+{% extends "base.html" %}
+
+{% block title %}Notre Histoire — Cà Phê Việt{% endblock %}
+
+{% block content %}
+
+<!-- ============================================================
+     HERO
+============================================================ -->
+<div style="position:relative; min-height:520px; display:flex; align-items:center;
+            background: url('/static/images/about.jpg') center/cover no-repeat;">
+  <div style="position:absolute; inset:0; background:rgba(46,26,14,0.70);"></div>
+  <div class="container position-relative">
+    <div class="col-lg-7">
+      <p class="section-label mb-3" style="color:rgba(212,168,71,0.9);">
+        Fondée en 2024 · Paris, France
+      </p>
+      <h1 style="color:#fff; font-size:clamp(2.2rem, 5vw, 3.8rem); line-height:1.15; margin-bottom:1rem;">
+        Du cœur du Vietnam<br>
+        <span style="color:var(--brand-gold);">à votre quotidien</span>
+      </h1>
+      <div style="width:48px; height:2px; background:var(--brand-gold); margin-bottom:1.2rem;"></div>
+      <p style="color:rgba(245,236,215,0.82); font-size:1rem; line-height:1.8; max-width:520px;">
+        Une histoire de passion, de terre volcanique et d'un café qui traverse des milliers de kilomètres pour vous offrir l'essence même du Vietnam.
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     BREADCRUMB
+============================================================ -->
+<div style="background:var(--brand-cream); border-bottom:1px solid rgba(74,44,23,0.1);">
+  <div class="container py-3">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb mb-0" style="font-size:0.82rem;">
+        <li class="breadcrumb-item">
+          <a href="{{ url_for('index') }}" style="color:var(--brand-gold); text-decoration:none;">Accueil</a>
+        </li>
+        <li class="breadcrumb-item active" style="color:var(--text-muted);">Notre Histoire</li>
+      </ol>
+    </nav>
+  </div>
+</div>
+
+<!-- ============================================================
+     STORY : Đắk Lắk
+============================================================ -->
+<section style="padding: 80px 0; background:#fff;">
+  <div class="container">
+    <div class="row g-5 align-items-center">
+
+      <div class="col-lg-6">
+        <p class="section-label">Les Origines</p>
+        <h2 class="section-title">Đắk Lắk — La Terre du Café</h2>
+        <div class="divider-gold"></div>
+
+        <p style="color:var(--text-muted); line-height:2; margin-bottom:1rem;">
+          À <strong>500 mètres d'altitude</strong>, sur les hauts plateaux du centre du Vietnam, les volcans éteints ont légué à la terre une richesse inégalée en minéraux. Cette terre rouge, appelée <em>đất bazan</em>, est l'écrin naturel qui donne naissance aux plus grands cafés de la région.
+        </p>
+        <p style="color:var(--text-muted); line-height:2; margin-bottom:1rem;">
+          Buôn Ma Thuột, capitale de la province de Đắk Lắk, est reconnue mondialement comme le berceau du Robusta vietnamien. Là où les plantations s'étendent à perte de vue, des familles de cultivateurs perpétuent depuis des générations les savoirs ancestraux de la culture caféière.
+        </p>
+        <p style="color:var(--text-muted); line-height:2;">
+          Le <strong>Robusta de Đắk Lắk</strong> se distingue par son corps intense, sa crème épaisse et ses notes profondes de chocolat noir, de caramel et d'épices douces. Il est la base incontournable du <em>cà phê sữa đá</em>, le célèbre café glacé au lait concentré.
+        </p>
+      </div>
+
+      <div class="col-lg-6">
+        <div class="row g-3">
+          <div class="col-6">
+            <img src="/static/images/about.jpg" alt="Plantation Đắk Lắk"
+                 style="width:100%; height:220px; object-fit:cover; border-radius:2px;"
+                 onerror="this.src='/static/images/hero.jpg'">
+          </div>
+          <div class="col-6">
+            <div style="background:var(--brand-brown); height:220px; display:flex; flex-direction:column;
+                        align-items:center; justify-content:center; padding:1.5rem; text-align:center; border-radius:2px;">
+              <div style="font-family:'Cormorant Garamond',serif; font-size:3rem; font-weight:700; color:var(--brand-gold); line-height:1;">1ᵉʳ</div>
+              <div style="color:rgba(245,236,215,0.82); font-size:0.82rem; margin-top:0.5rem; line-height:1.6;">producteur mondial de Robusta</div>
+            </div>
+          </div>
+          <div class="col-6">
+            <div style="background:var(--brand-gold); height:160px; display:flex; flex-direction:column;
+                        align-items:center; justify-content:center; padding:1.5rem; text-align:center; border-radius:2px;">
+              <div style="font-family:'Cormorant Garamond',serif; font-size:2.5rem; font-weight:700; color:var(--brand-dark); line-height:1;">600k</div>
+              <div style="color:rgba(46,26,14,0.75); font-size:0.8rem; margin-top:0.5rem; line-height:1.6;">tonnes de café/an</div>
+            </div>
+          </div>
+          <div class="col-6">
+            <img src="/static/images/hero.jpg" alt="Torréfaction artisanale"
+                 style="width:100%; height:160px; object-fit:cover; border-radius:2px;"
+                 onerror="this.src='/static/images/about.jpg'">
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     TIMELINE — De Đắk Lắk à Paris
+============================================================ -->
+<section style="padding: 80px 0; background:var(--brand-cream);">
+  <div class="container">
+    <div class="text-center mb-5">
+      <p class="section-label">Notre parcours</p>
+      <h2 class="section-title">De Đắk Lắk à Paris</h2>
+      <div class="divider-gold center"></div>
+    </div>
+
+    <div class="row justify-content-center">
+      <div class="col-lg-8">
+        {% set timeline = [
+          ('2019', 'bi-map', 'La découverte',
+           'Lors d\'un voyage à Buôn Ma Thuột, notre fondatrice tombe sous le charme d\'un café préparé à l\'aube par une famille locale. Une révélation qui changera tout.'),
+          ('2021', 'bi-people', 'Le partenariat',
+           'Après deux ans d\'échanges et de visites, nous scellons un partenariat direct avec la plantation familiale Nguyễn, héritiers de 3 générations de cultivateurs.'),
+          ('2023', 'bi-cup-hot', 'La torréfaction',
+           'Nous perfectionnons notre méthode de torréfaction artisanale à Paris, en respectant les profils thermiques qui subliment les arômes naturels du Robusta de Đắk Lắk.'),
+          ('2024', 'bi-rocket', 'Le lancement',
+           'Cà Phê Việt est officiellement lancé en France. Les premières commandes partent depuis notre atelier parisien, emballées à la main avec soin.')
+        ] %}
+
+        {% for year, icon, title, text in timeline %}
+        <div class="d-flex gap-4 mb-5">
+          <div style="flex-shrink:0; text-align:center; width:80px;">
+            <div style="width:52px; height:52px; background:var(--brand-brown); border-radius:50%;
+                        display:flex; align-items:center; justify-content:center; margin:0 auto;
+                        box-shadow:0 0 0 4px rgba(212,168,71,0.3);">
+              <i class="bi {{ icon }}" style="color:var(--brand-gold); font-size:1.1rem;"></i>
+            </div>
+            <div style="font-family:'Cormorant Garamond',serif; font-size:1.1rem; font-weight:700; color:var(--brand-brown); margin-top:0.5rem;">
+              {{ year }}
+            </div>
+          </div>
+          <div style="flex:1; padding-top:0.6rem;">
+            <h4 style="color:var(--brand-brown); font-size:1.25rem; margin-bottom:0.5rem;">{{ title }}</h4>
+            <p style="color:var(--text-muted); line-height:1.85; margin:0; font-size:0.92rem;">{{ text }}</p>
+          </div>
+        </div>
+        {% endfor %}
+
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ============================================================
+     MISSION STATEMENT
+============================================================ -->
+<section style="padding: 80px 0; background: var(--brand-brown);">
+  <div class="container">
+    <div class="row justify-content-center text-center">
+      <div class="col-lg-8">
+        <p class="section-label" style="color:rgba(212,168,71,0.85);">Notre mission</p>
+        <h2 style="color:#fff; font-size:clamp(1.8rem, 4vw, 3rem); line-height:1.3; margin-bottom:1.5rem;">
+          Réinventer votre rapport au café en vous rapprochant de ses racines.
+        </h2>
+        <div style="width:48px; height:2px; background:var(--brand-gold); margin:0 auto 2rem;"></div>
+        <p style="color:rgba(245,236,215,0.78); font-size:1rem; line-height:2; max-width:640px; margin:0 auto 2.5rem;">
+          Chez <strong style="color:var(--brand-gold);">Cà Phê Việt</strong>, nous croyons que le meilleur café est celui qui raconte une histoire — celle d'une terre, d'une famille, d'un geste. Notre mission est de vous offrir cette authenticité en éliminant chaque intermédiaire inutile entre la plantation et votre tasse.
+        </p>
+        <div class="row g-4 text-center">
+          <div class="col-md-4">
+            <div style="padding:1.5rem; border:1px solid rgba(212,168,71,0.25);">
+              <i class="bi bi-tree fs-2 mb-3 d-block" style="color:var(--brand-gold);"></i>
+              <h5 style="color:var(--brand-gold); font-size:1.05rem;">Commerce éthique</h5>
+              <p style="color:rgba(245,236,215,0.65); font-size:0.85rem; line-height:1.7; margin:0;">
+                Prix justes directement aux cultivateurs, sans spéculation ni pression industrielle.
+              </p>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div style="padding:1.5rem; border:1px solid rgba(212,168,71,0.25);">
+              <i class="bi bi-droplet fs-2 mb-3 d-block" style="color:var(--brand-gold);"></i>
+              <h5 style="color:var(--brand-gold); font-size:1.05rem;">Zéro additif</h5>
+              <p style="color:rgba(245,236,215,0.65); font-size:0.85rem; line-height:1.7; margin:0;">
+                100 % café pur, sans arômes artificiels, sans additifs, sans compromis sur la qualité.
+              </p>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div style="padding:1.5rem; border:1px solid rgba(212,168,71,0.25);">
+              <i class="bi bi-recycle fs-2 mb-3 d-block" style="color:var(--brand-gold);"></i>
+              <h5 style="color:var(--brand-gold); font-size:1.05rem;">Emballage durable</h5>
+              <p style="color:rgba(245,236,215,0.65); font-size:0.85rem; line-height:1.7; margin:0;">
+                Sachets recyclables et boîtes en carton FSC pour minimiser notre impact environnemental.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     ÉQUIPE
+============================================================ -->
+<section style="padding: 80px 0; background:var(--brand-light);">
+  <div class="container">
+    <div class="text-center mb-5">
+      <p class="section-label">Les visages derrière les tasses</p>
+      <h2 class="section-title">Notre Équipe</h2>
+      <div class="divider-gold center"></div>
+    </div>
+
+    <div class="row g-4 justify-content-center">
+
+      <div class="col-lg-4 col-md-6">
+        <div class="text-center p-4" style="background:#fff; border-bottom:3px solid var(--brand-gold);">
+          <div style="width:88px; height:88px; background:var(--brand-brown); border-radius:50%;
+                      margin:0 auto 1.2rem; display:flex; align-items:center; justify-content:center;
+                      font-size:2rem;">
+            ☕
+          </div>
+          <h4 style="color:var(--brand-brown); font-size:1.2rem; margin-bottom:0.25rem;">Linh Nguyễn</h4>
+          <p style="color:var(--brand-gold); font-size:0.8rem; font-weight:600; letter-spacing:0.1em; text-transform:uppercase; margin-bottom:0.75rem;">Fondatrice &amp; Torréfactrice</p>
+          <p style="color:var(--text-muted); font-size:0.85rem; line-height:1.75; margin:0;">
+            Native de Buôn Ma Thuột, Linh a grandi entre les caféiers de la plantation familiale avant de s'installer à Paris pour partager sa passion.
+          </p>
+        </div>
+      </div>
+
+      <div class="col-lg-4 col-md-6">
+        <div class="text-center p-4" style="background:#fff; border-bottom:3px solid var(--brand-gold);">
+          <div style="width:88px; height:88px; background:var(--brand-brown); border-radius:50%;
+                      margin:0 auto 1.2rem; display:flex; align-items:center; justify-content:center;
+                      font-size:2rem;">
+            🌿
+          </div>
+          <h4 style="color:var(--brand-brown); font-size:1.2rem; margin-bottom:0.25rem;">Minh Trần</h4>
+          <p style="color:var(--brand-gold); font-size:0.8rem; font-weight:600; letter-spacing:0.1em; text-transform:uppercase; margin-bottom:0.75rem;">Responsable Sourcing</p>
+          <p style="color:var(--text-muted); font-size:0.85rem; line-height:1.75; margin:0;">
+            Agronome spécialisé en caféiculture, Minh sélectionne chaque lot directement auprès des producteurs partenaires de Đắk Lắk.
+          </p>
+        </div>
+      </div>
+
+      <div class="col-lg-4 col-md-6">
+        <div class="text-center p-4" style="background:#fff; border-bottom:3px solid var(--brand-gold);">
+          <div style="width:88px; height:88px; background:var(--brand-brown); border-radius:50%;
+                      margin:0 auto 1.2rem; display:flex; align-items:center; justify-content:center;
+                      font-size:2rem;">
+            📦
+          </div>
+          <h4 style="color:var(--brand-brown); font-size:1.2rem; margin-bottom:0.25rem;">Sophie Leclerc</h4>
+          <p style="color:var(--brand-gold); font-size:0.8rem; font-weight:600; letter-spacing:0.1em; text-transform:uppercase; margin-bottom:0.75rem;">Logistique &amp; Service Client</p>
+          <p style="color:var(--text-muted); font-size:0.85rem; line-height:1.75; margin:0;">
+            Sophie s'assure que chaque commande arrive en parfait état, avec l'attention et la chaleur qui caractérisent l'accueil vietnamien.
+          </p>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+<!-- ============================================================
+     CTA FINAL
+============================================================ -->
+<section style="padding: 64px 0; background:var(--brand-cream);">
+  <div class="container text-center">
+    <h2 class="section-title" style="font-size:2rem; margin-bottom:1rem;">
+      Prêt à découvrir nos cafés ?
+    </h2>
+    <p style="color:var(--text-muted); font-size:0.95rem; max-width:480px; margin:0 auto 2rem; line-height:1.8;">
+      Rejoignez des milliers de clients en France et en Europe qui ont déjà adopté le café vietnamien.
+    </p>
+    <div class="d-flex gap-3 justify-content-center flex-wrap">
+      <a href="{{ url_for('products') }}" class="btn-brand btn px-5 py-3">
+        Découvrir nos cafés &nbsp;<i class="bi bi-arrow-right"></i>
+      </a>
+      <a href="mailto:contact@capheviet.fr" class="btn-outline-brand btn px-4 py-3">
+        Nous contacter
+      </a>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

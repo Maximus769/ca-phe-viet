@@ -1,0 +1,446 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard Admin — Cà Phê Việt{% endblock %}
+
+{% block content %}
+
+<style>
+  .admin-sidebar {
+    background: var(--brand-dark);
+    min-height: calc(100vh - 64px);
+    padding: 2rem 0;
+    position: sticky;
+    top: 64px;
+  }
+
+  .admin-sidebar .nav-link {
+    color: rgba(245,236,215,0.65) !important;
+    font-size: 0.85rem;
+    padding: 0.6rem 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    border-left: 3px solid transparent;
+    transition: all 0.2s;
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    text-decoration: none;
+    border-radius: 0;
+  }
+
+  .admin-sidebar .nav-link:hover,
+  .admin-sidebar .nav-link.active {
+    color: var(--brand-gold) !important;
+    background: rgba(212,168,71,0.08);
+    border-left-color: var(--brand-gold);
+  }
+
+  .stat-card {
+    background: #fff;
+    border-radius: 2px;
+    padding: 1.5rem;
+    border-left: 4px solid var(--brand-gold);
+    box-shadow: 0 2px 12px rgba(74,44,23,0.08);
+    height: 100%;
+  }
+
+  .stat-card .stat-number {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: var(--brand-brown);
+    line-height: 1;
+    margin-bottom: 0.25rem;
+  }
+
+  .stat-card .stat-label {
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+
+  .stat-card .stat-icon {
+    width: 44px;
+    height: 44px;
+    background: var(--brand-cream);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    color: var(--brand-brown);
+  }
+
+  .status-badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 10px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .status-pending   { background: #fef9e7; color: #f39c12; }
+  .status-confirmed { background: #e8f8f5; color: #27ae60; }
+  .status-shipped   { background: #eaf0fb; color: #2980b9; }
+  .status-delivered { background: #e9f7ef; color: #1e8449; }
+  .status-cancelled { background: #fdedec; color: #c0392b; }
+
+  .table-admin th {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--brand-brown);
+    background: var(--brand-cream);
+    border-bottom: 2px solid rgba(74,44,23,0.15);
+    padding: 0.9rem 1rem;
+    white-space: nowrap;
+  }
+
+  .table-admin td {
+    font-size: 0.87rem;
+    color: var(--text-main);
+    padding: 0.85rem 1rem;
+    vertical-align: middle;
+    border-color: rgba(74,44,23,0.07);
+  }
+
+  .table-admin tbody tr:hover {
+    background: var(--brand-light);
+  }
+</style>
+
+<div class="d-flex" style="background:var(--brand-light); min-height:calc(100vh - 64px);">
+
+  <!-- ======================================================
+       SIDEBAR
+  ====================================================== -->
+  <div class="admin-sidebar d-none d-lg-block" style="width:220px; flex-shrink:0;">
+
+    <div class="px-4 mb-4">
+      <div style="font-size:0.68rem; letter-spacing:0.15em; text-transform:uppercase; color:rgba(212,168,71,0.55); font-weight:600;">
+        Administration
+      </div>
+    </div>
+
+    <nav class="d-flex flex-column gap-1">
+      <a href="{{ url_for('admin_dashboard') }}" class="nav-link active">
+        <i class="bi bi-speedometer2"></i> Dashboard
+      </a>
+      <a href="{{ url_for('admin_dashboard') }}" class="nav-link">
+        <i class="bi bi-bag-check"></i> Commandes
+      </a>
+      <a href="#" class="nav-link">
+        <i class="bi bi-box-seam"></i> Produits
+      </a>
+      <a href="{{ url_for('admin_reviews') }}" class="nav-link">
+        <i class="bi bi-star"></i> Avis clients
+      </a>
+      <a href="#" class="nav-link">
+        <i class="bi bi-people"></i> Clients
+      </a>
+
+      <hr style="border-color:rgba(212,168,71,0.15); margin:0.5rem 1.5rem;">
+
+      <a href="{{ url_for('index') }}" class="nav-link">
+        <i class="bi bi-house"></i> Voir le site
+      </a>
+      <a href="{{ url_for('admin_logout') }}" class="nav-link" style="color:rgba(192,57,43,0.7) !important;"
+         onmouseover="this.style.color='#c0392b'" onmouseout="this.style.color='rgba(192,57,43,0.7)'">
+        <i class="bi bi-box-arrow-right"></i> Déconnexion
+      </a>
+    </nav>
+  </div>
+
+  <!-- ======================================================
+       CONTENU PRINCIPAL
+  ====================================================== -->
+  <div style="flex:1; padding:2rem; overflow-x:auto;">
+
+    <!-- Header dashboard -->
+    <div class="d-flex align-items-start justify-content-between mb-4 flex-wrap gap-3">
+      <div>
+        <p class="section-label mb-1">Tableau de bord</p>
+        <h2 style="color:var(--brand-brown); font-size:1.7rem; margin:0;">Vue d'ensemble</h2>
+      </div>
+      <div class="d-flex gap-2">
+        <span style="font-size:0.8rem; background:#fff; color:var(--text-muted); border:1px solid rgba(74,44,23,0.15); padding:6px 14px; border-radius:2px;">
+          <i class="bi bi-calendar3 me-1"></i>
+          {{ today.strftime('%d %B %Y') if today else 'Aujourd\'hui' }}
+        </span>
+      </div>
+    </div>
+
+    <!-- STATS CARDS -->
+    <div class="row g-3 mb-4">
+
+      <div class="col-sm-6 col-xl-3">
+        <div class="stat-card">
+          <div class="d-flex justify-content-between align-items-start mb-3">
+            <div class="stat-icon"><i class="bi bi-bag-check"></i></div>
+            <span style="font-size:0.75rem; color:#27ae60; background:#e9f7ef; padding:2px 8px; border-radius:10px; font-weight:600;">
+              +12% ce mois
+            </span>
+          </div>
+          <div class="stat-number">{{ orders|length }}</div>
+          <div class="stat-label">Commandes totales</div>
+        </div>
+      </div>
+
+      <div class="col-sm-6 col-xl-3">
+        <div class="stat-card" style="border-left-color: var(--brand-brown);">
+          <div class="d-flex justify-content-between align-items-start mb-3">
+            <div class="stat-icon"><i class="bi bi-currency-euro"></i></div>
+            <span style="font-size:0.75rem; color:#27ae60; background:#e9f7ef; padding:2px 8px; border-radius:10px; font-weight:600;">
+              +8% vs dernier mois
+            </span>
+          </div>
+          <div class="stat-number">{{ "%.0f"|format(revenue) }} €</div>
+          <div class="stat-label">Chiffre d'affaires</div>
+        </div>
+      </div>
+
+      <div class="col-sm-6 col-xl-3">
+        <div class="stat-card" style="border-left-color: #27ae60;">
+          <div class="d-flex justify-content-between align-items-start mb-3">
+            <div class="stat-icon"><i class="bi bi-people"></i></div>
+          </div>
+          <div class="stat-number">{{ customers }}</div>
+          <div class="stat-label">Clients enregistrés</div>
+        </div>
+      </div>
+
+      <div class="col-sm-6 col-xl-3">
+        <div class="stat-card" style="border-left-color: #2980b9;">
+          <div class="d-flex justify-content-between align-items-start mb-3">
+            <div class="stat-icon"><i class="bi bi-clock-history"></i></div>
+          </div>
+          <div class="stat-number">
+            {{ orders | selectattr('status', 'equalto', 'pending') | list | length }}
+          </div>
+          <div class="stat-label">En attente de traitement</div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- TABLEAU COMMANDES -->
+    <div style="background:#fff; border-radius:2px; box-shadow:0 2px 12px rgba(74,44,23,0.07); overflow:hidden; margin-bottom:2rem;">
+
+      <div class="d-flex align-items-center justify-content-between p-4 border-bottom"
+           style="border-color:rgba(74,44,23,0.1) !important;">
+        <h3 style="font-family:'Cormorant Garamond',serif; font-size:1.25rem; color:var(--brand-brown); margin:0;">
+          <i class="bi bi-bag-check me-2" style="color:var(--brand-gold);"></i>
+          Commandes récentes
+        </h3>
+        <div class="d-flex gap-2 align-items-center">
+          <!-- Filtre statut rapide -->
+          <select class="form-select form-select-sm" id="status-filter"
+                  style="border-color:rgba(74,44,23,0.2); border-radius:0; font-size:0.82rem; width:auto;">
+            <option value="">Tous les statuts</option>
+            <option value="pending">En attente</option>
+            <option value="confirmed">Confirmées</option>
+            <option value="shipped">Expédiées</option>
+            <option value="delivered">Livrées</option>
+            <option value="cancelled">Annulées</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="table-responsive">
+        <table class="table table-admin mb-0">
+          <thead>
+            <tr>
+              <th>Réf.</th>
+              <th>Client</th>
+              <th>Email</th>
+              <th>Total</th>
+              <th>Articles</th>
+              <th>Statut</th>
+              <th>Date</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for order in orders %}
+            <tr class="order-row" data-status="{{ order.status }}">
+
+              <td>
+                <span style="font-family:'Cormorant Garamond',serif; font-weight:700; color:var(--brand-brown);">
+                  #{{ order.ref }}
+                </span>
+              </td>
+
+              <td>
+                <div style="font-weight:600; color:var(--brand-brown);">{{ order.customer.name }}</div>
+              </td>
+
+              <td>
+                <a href="mailto:{{ order.customer.email }}"
+                   style="color:var(--brand-gold); text-decoration:none; font-size:0.85rem;">
+                  {{ order.customer.email }}
+                </a>
+              </td>
+
+              <td>
+                <span style="font-family:'Cormorant Garamond',serif; font-size:1.1rem; font-weight:700; color:var(--brand-brown);">
+                  {{ "%.2f"|format(order.total) }} €
+                </span>
+              </td>
+
+              <td>
+                <span style="color:var(--text-muted); font-size:0.85rem;">
+                  {{ order.items|length if order.items else 0 }} article(s)
+                </span>
+              </td>
+
+              <td>
+                <span class="status-badge status-{{ order.status }}">
+                  {% if order.status == 'pending' %}En attente
+                  {% elif order.status == 'confirmed' %}Confirmée
+                  {% elif order.status == 'shipped' %}Expédiée
+                  {% elif order.status == 'delivered' %}Livrée
+                  {% elif order.status == 'cancelled' %}Annulée
+                  {% else %}{{ order.status }}
+                  {% endif %}
+                </span>
+              </td>
+
+              <td style="color:var(--text-muted); font-size:0.83rem; white-space:nowrap;">
+                {{ order.created_at.strftime('%d/%m/%Y') if order.created_at else '—' }}
+              </td>
+
+              <td>
+                <!-- Dropdown changement statut -->
+                <div class="dropdown">
+                  <button class="btn btn-sm dropdown-toggle"
+                          type="button"
+                          data-bs-toggle="dropdown"
+                          style="font-size:0.78rem; background:var(--brand-light); color:var(--brand-brown);
+                                 border:1px solid rgba(74,44,23,0.2); border-radius:0; padding:4px 10px;">
+                    Statut
+                  </button>
+                  <ul class="dropdown-menu" style="border-radius:2px; font-size:0.85rem; min-width:160px; border:1px solid rgba(74,44,23,0.15);">
+                    {% for status_val, status_label in [
+                        ('pending',   'En attente'),
+                        ('confirmed', 'Confirmée'),
+                        ('shipped',   'Expédiée'),
+                        ('delivered', 'Livrée'),
+                        ('cancelled', 'Annulée')
+                    ] %}
+                    <li>
+                      <form method="POST" action="{{ url_for('admin_update_order_status', order_id=order.id) }}" class="m-0">
+                        <input type="hidden" name="status" value="{{ status_val }}">
+                        <button type="submit"
+                                class="dropdown-item {% if order.status == status_val %}fw-bold{% endif %}"
+                                style="font-size:0.83rem; {% if order.status == status_val %}color:var(--brand-brown);{% endif %}">
+                          {% if order.status == status_val %}<i class="bi bi-check me-1" style="color:var(--brand-gold);"></i>{% else %}&nbsp;&nbsp;&nbsp;&nbsp;{% endif %}
+                          {{ status_label }}
+                        </button>
+                      </form>
+                    </li>
+                    {% endfor %}
+                  </ul>
+                </div>
+              </td>
+
+            </tr>
+            {% else %}
+            <tr>
+              <td colspan="8" class="text-center py-5" style="color:var(--text-muted);">
+                <i class="bi bi-inbox fs-2 d-block mb-2"></i>
+                Aucune commande pour le moment.
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Footer tableau -->
+      {% if orders %}
+      <div class="px-4 py-3 d-flex justify-content-between align-items-center"
+           style="background:var(--brand-light); border-top:1px solid rgba(74,44,23,0.08); font-size:0.82rem; color:var(--text-muted);">
+        <span>{{ orders|length }} commande(s) affichée(s)</span>
+        <span>Mise à jour en temps réel</span>
+      </div>
+      {% endif %}
+
+    </div>
+
+    <!-- QUICK LINKS -->
+    <div class="row g-3">
+      <div class="col-md-4">
+        <a href="{{ url_for('admin_reviews') }}" class="d-block p-3 text-decoration-none"
+           style="background:#fff; border:1px solid rgba(74,44,23,0.1); border-radius:2px; transition:box-shadow 0.2s;"
+           onmouseover="this.style.boxShadow='0 4px 16px rgba(74,44,23,0.1)'"
+           onmouseout="this.style.boxShadow='none'">
+          <div class="d-flex align-items-center gap-3">
+            <div style="width:40px; height:40px; background:var(--brand-cream); border-radius:50%; display:flex; align-items:center; justify-content:center;">
+              <i class="bi bi-star" style="color:var(--brand-brown);"></i>
+            </div>
+            <div>
+              <div style="font-weight:600; color:var(--brand-brown); font-size:0.9rem;">Avis clients</div>
+              <div style="font-size:0.78rem; color:var(--text-muted);">Modérer les commentaires</div>
+            </div>
+          </div>
+        </a>
+      </div>
+      <div class="col-md-4">
+        <a href="{{ url_for('products') }}" class="d-block p-3 text-decoration-none"
+           style="background:#fff; border:1px solid rgba(74,44,23,0.1); border-radius:2px; transition:box-shadow 0.2s;"
+           onmouseover="this.style.boxShadow='0 4px 16px rgba(74,44,23,0.1)'"
+           onmouseout="this.style.boxShadow='none'">
+          <div class="d-flex align-items-center gap-3">
+            <div style="width:40px; height:40px; background:var(--brand-cream); border-radius:50%; display:flex; align-items:center; justify-content:center;">
+              <i class="bi bi-box-seam" style="color:var(--brand-brown);"></i>
+            </div>
+            <div>
+              <div style="font-weight:600; color:var(--brand-brown); font-size:0.9rem;">Catalogue produits</div>
+              <div style="font-size:0.78rem; color:var(--text-muted);">Voir la boutique</div>
+            </div>
+          </div>
+        </a>
+      </div>
+      <div class="col-md-4">
+        <a href="{{ url_for('index') }}" class="d-block p-3 text-decoration-none"
+           style="background:#fff; border:1px solid rgba(74,44,23,0.1); border-radius:2px; transition:box-shadow 0.2s;"
+           onmouseover="this.style.boxShadow='0 4px 16px rgba(74,44,23,0.1)'"
+           onmouseout="this.style.boxShadow='none'">
+          <div class="d-flex align-items-center gap-3">
+            <div style="width:40px; height:40px; background:var(--brand-cream); border-radius:50%; display:flex; align-items:center; justify-content:center;">
+              <i class="bi bi-house" style="color:var(--brand-brown);"></i>
+            </div>
+            <div>
+              <div style="font-weight:600; color:var(--brand-brown); font-size:0.9rem;">Voir le site</div>
+              <div style="font-size:0.78rem; color:var(--text-muted);">Ouvrir la boutique</div>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  // Filtre statut live
+  document.getElementById('status-filter').addEventListener('change', function() {
+    const val = this.value;
+    document.querySelectorAll('.order-row').forEach(function(row) {
+      if (!val || row.getAttribute('data-status') === val) {
+        row.style.display = '';
+      } else {
+        row.style.display = 'none';
+      }
+    });
+  });
+</script>
+{% endblock %}

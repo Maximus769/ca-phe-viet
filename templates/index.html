@@ -1,0 +1,391 @@
+{% extends "base.html" %}
+
+{% block title %}Cà Phê Việt — Café Robusta du Vietnam, livré en France{% endblock %}
+
+{% block content %}
+
+<!-- ============================================================
+     HERO
+============================================================ -->
+<section class="hero position-relative d-flex align-items-center"
+         style="min-height: 88vh; background: url('/static/images/hero.jpg') center/cover no-repeat;">
+
+  <!-- Overlay brun -->
+  <div class="position-absolute top-0 start-0 w-100 h-100"
+       style="background: rgba(74, 44, 23, 0.62); z-index: 0;"></div>
+
+  <div class="container position-relative" style="z-index: 1;">
+    <div class="row">
+      <div class="col-lg-7 col-xl-6">
+
+        <p class="section-label mb-3" style="color: rgba(212,168,71,0.9); letter-spacing:0.25em;">
+          Hauts Plateaux · Đắk Lắk · Vietnam
+        </p>
+
+        <h1 style="color: #fff; font-size: clamp(2.2rem, 5vw, 4rem); font-weight: 600; line-height: 1.15;">
+          Robusta Đắk Lắk<br>
+          <span style="color: var(--brand-gold);">Torréfié à la main</span>
+        </h1>
+
+        <p class="mt-3 mb-4"
+           style="color: rgba(245,236,215,0.85); font-size: 1.05rem; font-weight: 300; line-height: 1.8; max-width: 520px;">
+          Livraison directe du Vietnam &nbsp;·&nbsp; Depuis 2024<br>
+          Des grains soigneusement sélectionnés sur les hauteurs de Buôn Ma Thuột, torréfiés selon les traditions vietnamiennes.
+        </p>
+
+        <div class="d-flex flex-wrap gap-3">
+          <a href="{{ url_for('products') }}" class="btn-gold btn px-4 py-3">
+            Découvrir nos cafés &nbsp;<i class="bi bi-arrow-right"></i>
+          </a>
+          <a href="{{ url_for('about') }}" class="btn btn-outline-light px-4 py-3"
+             style="border-radius:0; font-size:0.82rem; letter-spacing:0.1em; text-transform:uppercase; font-weight:600;">
+            Notre Histoire
+          </a>
+        </div>
+
+        <!-- Badges de confiance -->
+        <div class="d-flex flex-wrap gap-4 mt-5">
+          <div class="d-flex align-items-center gap-2" style="color:rgba(245,236,215,0.75); font-size:0.82rem;">
+            <i class="bi bi-patch-check-fill" style="color:var(--brand-gold); font-size:1.1rem;"></i>
+            100 % Arabica & Robusta pur
+          </div>
+          <div class="d-flex align-items-center gap-2" style="color:rgba(245,236,215,0.75); font-size:0.82rem;">
+            <i class="bi bi-truck" style="color:var(--brand-gold); font-size:1.1rem;"></i>
+            Livraison en 3–5 jours
+          </div>
+          <div class="d-flex align-items-center gap-2" style="color:rgba(245,236,215,0.75); font-size:0.82rem;">
+            <i class="bi bi-star-fill" style="color:var(--brand-gold); font-size:1.1rem;"></i>
+            4,9 / 5 · +200 avis
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Scroll indicator -->
+  <div class="position-absolute bottom-0 start-50 translate-middle-x mb-4"
+       style="z-index:1; animation: bounce 2s infinite;">
+    <a href="#produits" style="color:rgba(212,168,71,0.8); font-size:1.6rem;">
+      <i class="bi bi-chevron-double-down"></i>
+    </a>
+  </div>
+
+  <style>
+    @keyframes bounce {
+      0%, 100% { transform: translateX(-50%) translateY(0); }
+      50%       { transform: translateX(-50%) translateY(-8px); }
+    }
+  </style>
+</section>
+
+<!-- ============================================================
+     BANDEAU DE CONFIANCE
+============================================================ -->
+<div style="background: var(--brand-brown); color: var(--brand-cream);">
+  <div class="container">
+    <div class="row text-center py-4 g-3">
+      <div class="col-6 col-md-3 py-2">
+        <i class="bi bi-shield-check fs-4 d-block mb-1" style="color:var(--brand-gold);"></i>
+        <span style="font-size:0.8rem; letter-spacing:0.06em; opacity:0.85;">Paiement 100 % sécurisé</span>
+      </div>
+      <div class="col-6 col-md-3 py-2">
+        <i class="bi bi-box-seam fs-4 d-block mb-1" style="color:var(--brand-gold);"></i>
+        <span style="font-size:0.8rem; letter-spacing:0.06em; opacity:0.85;">Emballage sous vide</span>
+      </div>
+      <div class="col-6 col-md-3 py-2">
+        <i class="bi bi-arrow-repeat fs-4 d-block mb-1" style="color:var(--brand-gold);"></i>
+        <span style="font-size:0.8rem; letter-spacing:0.06em; opacity:0.85;">Retour sous 30 jours</span>
+      </div>
+      <div class="col-6 col-md-3 py-2">
+        <i class="bi bi-headset fs-4 d-block mb-1" style="color:var(--brand-gold);"></i>
+        <span style="font-size:0.8rem; letter-spacing:0.06em; opacity:0.85;">Support client 7j/7</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     NOS PRODUITS
+============================================================ -->
+<section id="produits" class="py-6" style="padding: 80px 0; background: var(--brand-light);">
+  <div class="container">
+
+    <div class="text-center mb-5">
+      <p class="section-label">Sélection du mois</p>
+      <h2 class="section-title">Nos Produits Phares</h2>
+      <div class="divider-gold center"></div>
+      <p class="text-muted" style="max-width: 520px; margin: 0 auto; font-size:0.95rem;">
+        Chaque grain est sélectionné à la main sur les terres volcaniques de Đắk Lắk, garantissant une qualité exceptionnelle tasse après tasse.
+      </p>
+    </div>
+
+    <div class="row g-4">
+      {% for product in products[:6] %}
+      <div class="col-lg-4 col-md-6">
+        <div class="product-card h-100 d-flex flex-column">
+          <div style="position:relative; overflow:hidden;">
+            <img src="{{ product.image if product.image else '/static/images/product-placeholder.jpg' }}"
+                 alt="{{ product.name }}"
+                 style="width:100%; height:230px; object-fit:cover; transition:transform 0.4s;">
+            {% if product.badge %}
+              <span class="position-absolute top-0 end-0 m-2 px-2 py-1"
+                    style="background:var(--brand-gold); color:var(--brand-dark); font-size:0.72rem; font-weight:700; letter-spacing:0.08em;">
+                {{ product.badge }}
+              </span>
+            {% endif %}
+          </div>
+
+          <div class="card-body d-flex flex-column p-3">
+            <p class="section-label mb-1" style="font-size:0.68rem;">{{ product.category if product.category else 'Café' }}</p>
+            <h3 style="font-size:1.2rem; font-weight:600; color:var(--brand-brown); margin-bottom:0.5rem;">
+              {{ product.name }}
+            </h3>
+            <p class="text-muted" style="font-size:0.85rem; line-height:1.6; flex:1;">
+              {{ product.description[:100] ~ '…' if product.description and product.description|length > 100 else product.description }}
+            </p>
+
+            <div class="d-flex align-items-center justify-content-between mt-3">
+              <span class="price">{{ "%.2f"|format(product.price) }} €</span>
+              <div class="d-flex gap-2">
+                <a href="{{ url_for('product_detail', pid=product.id) }}"
+                   class="btn btn-outline-brand btn-sm py-2 px-3">
+                  Détails
+                </a>
+                <form method="POST" action="{{ url_for('cart_add', pid=product.id) }}" class="m-0">
+                  <input type="hidden" name="qty" value="1">
+                  <button type="submit" class="btn btn-brand btn-sm py-2 px-3">
+                    <i class="bi bi-bag-plus"></i>
+                  </button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+    <div class="text-center mt-5">
+      <a href="{{ url_for('products') }}" class="btn-brand btn px-5 py-3">
+        Voir tous nos cafés &nbsp;<i class="bi bi-arrow-right"></i>
+      </a>
+    </div>
+
+  </div>
+</section>
+
+<!-- ============================================================
+     NOTRE HISTOIRE (2 colonnes)
+============================================================ -->
+<section style="padding: 80px 0; background: #fff;">
+  <div class="container">
+    <div class="row g-5 align-items-center">
+
+      <!-- Texte -->
+      <div class="col-lg-6 order-2 order-lg-1">
+        <p class="section-label">Origine &amp; Passion</p>
+        <h2 class="section-title">De Đắk Lắk à votre tasse</h2>
+        <div class="divider-gold"></div>
+
+        <p style="color: var(--text-muted); line-height:1.9; margin-bottom:1rem;">
+          Nichés à plus de <strong>500 mètres d'altitude</strong> dans les hauts plateaux du centre du Vietnam, les caféiers de Đắk Lắk bénéficient d'un sol volcanique riche et d'un microclimat idéal. Cette terre, surnommée <em>« capitale mondiale du Robusta »</em>, produit des grains d'une intensité et d'une profondeur incomparables.
+        </p>
+        <p style="color: var(--text-muted); line-height:1.9; margin-bottom:1.5rem;">
+          Fondée en 2024 par une famille vietnamienne installée en France, <strong>Cà Phê Việt</strong> naît d'une envie simple : partager l'authenticité du café vietnamien avec les amateurs européens, sans intermédiaire, directement de la plantation à votre tasse.
+        </p>
+
+        <div class="d-flex gap-4 mb-4">
+          <div class="text-center">
+            <div style="font-family:'Cormorant Garamond',serif; font-size:2rem; font-weight:700; color:var(--brand-brown);">500m</div>
+            <div style="font-size:0.78rem; color:var(--text-muted); letter-spacing:0.05em;">Altitude</div>
+          </div>
+          <div class="text-center">
+            <div style="font-family:'Cormorant Garamond',serif; font-size:2rem; font-weight:700; color:var(--brand-brown);">100%</div>
+            <div style="font-size:0.78rem; color:var(--text-muted); letter-spacing:0.05em;">Naturel</div>
+          </div>
+          <div class="text-center">
+            <div style="font-family:'Cormorant Garamond',serif; font-size:2rem; font-weight:700; color:var(--brand-brown);">2024</div>
+            <div style="font-size:0.78rem; color:var(--text-muted); letter-spacing:0.05em;">Fondée</div>
+          </div>
+        </div>
+
+        <a href="{{ url_for('about') }}" class="btn-brand btn px-4 py-2">
+          Lire notre histoire &nbsp;<i class="bi bi-arrow-right"></i>
+        </a>
+      </div>
+
+      <!-- Image -->
+      <div class="col-lg-6 order-1 order-lg-2">
+        <div style="position:relative;">
+          <img src="/static/images/about.jpg" alt="Plantation de café au Vietnam"
+               style="width:100%; border-radius:2px; box-shadow: 8px 8px 0 var(--brand-gold);"
+               onerror="this.src='/static/images/hero.jpg'">
+          <div class="position-absolute bottom-0 start-0 m-3 p-3"
+               style="background:var(--brand-brown); color:var(--brand-gold);">
+            <div style="font-family:'Cormorant Garamond',serif; font-size:1.05rem; font-weight:600; font-style:italic;">
+              « La meilleure tasse commence<br>dans les meilleures terres. »
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     POURQUOI NOUS CHOISIR — 3 cards
+============================================================ -->
+<section style="padding: 80px 0; background: var(--brand-cream);">
+  <div class="container">
+
+    <div class="text-center mb-5">
+      <p class="section-label">Nos engagements</p>
+      <h2 class="section-title">Pourquoi nous choisir ?</h2>
+      <div class="divider-gold center"></div>
+    </div>
+
+    <div class="row g-4">
+
+      <!-- Card 1 -->
+      <div class="col-lg-4 col-md-6">
+        <div class="text-center p-5 h-100"
+             style="background:#fff; border-top: 3px solid var(--brand-gold); box-shadow: 0 2px 16px rgba(74,44,23,0.07);">
+          <div style="width:64px; height:64px; background:var(--brand-brown); border-radius:50%;
+                      display:flex; align-items:center; justify-content:center; margin: 0 auto 1.2rem; font-size:1.6rem;">
+            🌿
+          </div>
+          <h3 style="font-size:1.4rem; color:var(--brand-brown); margin-bottom:0.8rem;">Origine Pure</h3>
+          <p style="color:var(--text-muted); font-size:0.9rem; line-height:1.8;">
+            Chaque sachet est tracé jusqu'à la plantation d'origine. Nos grains proviennent exclusivement des hauts plateaux de Đắk Lắk, certifiés sans pesticides.
+          </p>
+        </div>
+      </div>
+
+      <!-- Card 2 -->
+      <div class="col-lg-4 col-md-6">
+        <div class="text-center p-5 h-100"
+             style="background: var(--brand-brown); border-top: 3px solid var(--brand-gold); box-shadow: 0 2px 16px rgba(74,44,23,0.18);">
+          <div style="width:64px; height:64px; background:var(--brand-gold); border-radius:50%;
+                      display:flex; align-items:center; justify-content:center; margin: 0 auto 1.2rem; font-size:1.6rem;">
+            ☕
+          </div>
+          <h3 style="font-size:1.4rem; color:var(--brand-gold); margin-bottom:0.8rem;">Torréfaction Artisanale</h3>
+          <p style="color:rgba(245,236,215,0.82); font-size:0.9rem; line-height:1.8;">
+            Torréfié en petites séries selon les techniques traditionnelles vietnamiennes. Chaque lot est contrôlé à la main pour garantir un profil aromatique constant.
+          </p>
+        </div>
+      </div>
+
+      <!-- Card 3 -->
+      <div class="col-lg-4 col-md-6 mx-md-auto">
+        <div class="text-center p-5 h-100"
+             style="background:#fff; border-top: 3px solid var(--brand-gold); box-shadow: 0 2px 16px rgba(74,44,23,0.07);">
+          <div style="width:64px; height:64px; background:var(--brand-brown); border-radius:50%;
+                      display:flex; align-items:center; justify-content:center; margin: 0 auto 1.2rem; font-size:1.6rem;">
+            🚚
+          </div>
+          <h3 style="font-size:1.4rem; color:var(--brand-brown); margin-bottom:0.8rem;">Livraison Express</h3>
+          <p style="color:var(--text-muted); font-size:0.9rem; line-height:1.8;">
+            Expédition sous 24h depuis notre entrepôt parisien. Livraison en 3 à 5 jours ouvrés en France métropolitaine. Offerte dès 40 € d'achat.
+          </p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     SECTION AVIS CLIENTS
+============================================================ -->
+<section style="padding: 80px 0; background:#fff;">
+  <div class="container">
+    <div class="text-center mb-5">
+      <p class="section-label">Ce qu'ils en pensent</p>
+      <h2 class="section-title">Avis de nos clients</h2>
+      <div class="divider-gold center"></div>
+    </div>
+
+    <div class="row g-4">
+      <div class="col-md-4">
+        <div class="p-4 h-100" style="background:var(--brand-light); border-left: 3px solid var(--brand-gold);">
+          <div class="mb-2" style="color:var(--brand-gold);">★★★★★</div>
+          <p style="font-size:0.92rem; color:var(--text-muted); line-height:1.8; font-style:italic;">
+            "Un café d'une richesse incroyable. On sent immédiatement la différence avec les marques industrielles. Je commande chaque mois !"
+          </p>
+          <div style="font-weight:600; color:var(--brand-brown); font-size:0.88rem; margin-top:1rem;">
+            — Marie L., Paris
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="p-4 h-100" style="background:var(--brand-light); border-left: 3px solid var(--brand-gold);">
+          <div class="mb-2" style="color:var(--brand-gold);">★★★★★</div>
+          <p style="font-size:0.92rem; color:var(--text-muted); line-height:1.8; font-style:italic;">
+            "Le Robusta Đắk Lắk est absolument exceptionnel. Très intense, notes de chocolat noir. Ma nouvelle référence pour le phin vietnamien."
+          </p>
+          <div style="font-weight:600; color:var(--brand-brown); font-size:0.88rem; margin-top:1rem;">
+            — Thomas B., Lyon
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="p-4 h-100" style="background:var(--brand-light); border-left: 3px solid var(--brand-gold);">
+          <div class="mb-2" style="color:var(--brand-gold);">★★★★☆</div>
+          <p style="font-size:0.92rem; color:var(--text-muted); line-height:1.8; font-style:italic;">
+            "Livraison rapide, emballage soigné. Le café est délicieux et l'équipe est très réactive. Je recommande sans hésitation."
+          </p>
+          <div style="font-weight:600; color:var(--brand-brown); font-size:0.88rem; margin-top:1rem;">
+            — Sophie D., Bordeaux
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ============================================================
+     NEWSLETTER
+============================================================ -->
+<section style="padding: 64px 0; background: var(--brand-brown);">
+  <div class="container">
+    <div class="row justify-content-center text-center">
+      <div class="col-lg-6">
+        <p class="section-label" style="color:rgba(212,168,71,0.85);">Ne manquez rien</p>
+        <h2 style="color:#fff; font-family:'Cormorant Garamond',serif;">Recevez nos actualités</h2>
+        <p style="color:rgba(245,236,215,0.75); margin: 1rem 0 1.5rem; font-size:0.92rem;">
+          Nouvelles origines, offres exclusives et conseils de préparation directement dans votre boîte mail.
+        </p>
+        <form class="d-flex gap-2" action="/newsletter" method="POST">
+          <input type="email" name="email" required placeholder="votre@email.fr"
+                 class="form-control" style="border-radius:0; border:none; font-family:'Inter',sans-serif;">
+          <button type="submit" class="btn-gold btn px-4" style="white-space:nowrap;">
+            S'abonner
+          </button>
+        </form>
+        <p style="color:rgba(245,236,215,0.45); font-size:0.75rem; margin-top:0.75rem;">
+          Pas de spam. Désinscription en un clic.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  // Hover zoom on product images
+  document.querySelectorAll('.product-card img').forEach(function(img) {
+    img.parentElement.addEventListener('mouseenter', function() {
+      img.style.transform = 'scale(1.05)';
+    });
+    img.parentElement.addEventListener('mouseleave', function() {
+      img.style.transform = 'scale(1)';
+    });
+  });
+</script>
+{% endblock %}

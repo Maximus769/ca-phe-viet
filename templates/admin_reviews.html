@@ -1,0 +1,399 @@
+{% extends "base.html" %}
+
+{% block title %}Gestion des Avis — Admin Cà Phê Việt{% endblock %}
+
+{% block content %}
+
+<style>
+  .admin-sidebar {
+    background: var(--brand-dark);
+    min-height: calc(100vh - 64px);
+    padding: 2rem 0;
+    position: sticky;
+    top: 64px;
+  }
+
+  .admin-sidebar .nav-link {
+    color: rgba(245,236,215,0.65) !important;
+    font-size: 0.85rem;
+    padding: 0.6rem 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    border-left: 3px solid transparent;
+    transition: all 0.2s;
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    text-decoration: none;
+    border-radius: 0;
+  }
+
+  .admin-sidebar .nav-link:hover,
+  .admin-sidebar .nav-link.active {
+    color: var(--brand-gold) !important;
+    background: rgba(212,168,71,0.08);
+    border-left-color: var(--brand-gold);
+  }
+
+  .table-admin th {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--brand-brown);
+    background: var(--brand-cream);
+    border-bottom: 2px solid rgba(74,44,23,0.15);
+    padding: 0.9rem 1rem;
+    white-space: nowrap;
+  }
+
+  .table-admin td {
+    font-size: 0.87rem;
+    color: var(--text-main);
+    padding: 0.85rem 1rem;
+    vertical-align: middle;
+    border-color: rgba(74,44,23,0.07);
+  }
+
+  .table-admin tbody tr:hover {
+    background: var(--brand-light);
+  }
+
+  .review-status-published { background:#e9f7ef; color:#27ae60; }
+  .review-status-pending   { background:#fef9e7; color:#f39c12; }
+  .review-status-rejected  { background:#fdedec; color:#c0392b; }
+
+  .stars-display {
+    color: var(--brand-gold);
+    letter-spacing: 1px;
+    font-size: 1rem;
+  }
+</style>
+
+<div class="d-flex" style="background:var(--brand-light); min-height:calc(100vh - 64px);">
+
+  <!-- SIDEBAR -->
+  <div class="admin-sidebar d-none d-lg-block" style="width:220px; flex-shrink:0;">
+    <div class="px-4 mb-4">
+      <div style="font-size:0.68rem; letter-spacing:0.15em; text-transform:uppercase; color:rgba(212,168,71,0.55); font-weight:600;">
+        Administration
+      </div>
+    </div>
+    <nav class="d-flex flex-column gap-1">
+      <a href="{{ url_for('admin_dashboard') }}" class="nav-link">
+        <i class="bi bi-speedometer2"></i> Dashboard
+      </a>
+      <a href="{{ url_for('admin_dashboard') }}" class="nav-link">
+        <i class="bi bi-bag-check"></i> Commandes
+      </a>
+      <a href="#" class="nav-link">
+        <i class="bi bi-box-seam"></i> Produits
+      </a>
+      <a href="{{ url_for('admin_reviews') }}" class="nav-link active">
+        <i class="bi bi-star"></i> Avis clients
+      </a>
+      <a href="#" class="nav-link">
+        <i class="bi bi-people"></i> Clients
+      </a>
+      <hr style="border-color:rgba(212,168,71,0.15); margin:0.5rem 1.5rem;">
+      <a href="{{ url_for('index') }}" class="nav-link">
+        <i class="bi bi-house"></i> Voir le site
+      </a>
+      <a href="{{ url_for('admin_logout') }}" class="nav-link" style="color:rgba(192,57,43,0.7) !important;">
+        <i class="bi bi-box-arrow-right"></i> Déconnexion
+      </a>
+    </nav>
+  </div>
+
+  <!-- CONTENU PRINCIPAL -->
+  <div style="flex:1; padding:2rem; overflow-x:auto;">
+
+    <!-- Header -->
+    <div class="d-flex align-items-start justify-content-between mb-4 flex-wrap gap-3">
+      <div>
+        <p class="section-label mb-1">Administration</p>
+        <h2 style="color:var(--brand-brown); font-size:1.7rem; margin:0;">
+          <i class="bi bi-star me-2" style="color:var(--brand-gold); font-size:1.3rem;"></i>
+          Gestion des Avis Clients
+        </h2>
+      </div>
+      <div class="d-flex gap-2 align-items-center">
+        <span style="font-size:0.82rem; background:var(--brand-cream); color:var(--brand-brown);
+                     border:1px solid rgba(74,44,23,0.15); padding:6px 14px; border-radius:2px; font-weight:600;">
+          {{ reviews|length }} avis au total
+        </span>
+      </div>
+    </div>
+
+    <!-- STATS RAPIDES -->
+    <div class="row g-3 mb-4">
+      {% set total = reviews|length %}
+      {% set published = reviews | selectattr('status', 'equalto', 'published') | list | length if reviews and reviews[0] is defined and reviews[0].status is defined else total %}
+      {% set pending   = reviews | selectattr('status', 'equalto', 'pending')   | list | length if reviews and reviews[0] is defined and reviews[0].status is defined else 0 %}
+      {% set avg_rating = (reviews | sum(attribute='rating') / reviews|length) | round(1) if reviews else 0 %}
+
+      <div class="col-sm-3">
+        <div style="background:#fff; border-left:4px solid var(--brand-gold); padding:1.2rem; border-radius:2px;">
+          <div style="font-family:'Cormorant Garamond',serif; font-size:1.8rem; font-weight:700; color:var(--brand-brown);">{{ total }}</div>
+          <div style="font-size:0.78rem; font-weight:600; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-muted);">Total</div>
+        </div>
+      </div>
+      <div class="col-sm-3">
+        <div style="background:#fff; border-left:4px solid #27ae60; padding:1.2rem; border-radius:2px;">
+          <div style="font-family:'Cormorant Garamond',serif; font-size:1.8rem; font-weight:700; color:#27ae60;">{{ published }}</div>
+          <div style="font-size:0.78rem; font-weight:600; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-muted);">Publiés</div>
+        </div>
+      </div>
+      <div class="col-sm-3">
+        <div style="background:#fff; border-left:4px solid #f39c12; padding:1.2rem; border-radius:2px;">
+          <div style="font-family:'Cormorant Garamond',serif; font-size:1.8rem; font-weight:700; color:#f39c12;">{{ pending }}</div>
+          <div style="font-size:0.78rem; font-weight:600; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-muted);">En attente</div>
+        </div>
+      </div>
+      <div class="col-sm-3">
+        <div style="background:#fff; border-left:4px solid var(--brand-brown); padding:1.2rem; border-radius:2px;">
+          <div style="font-family:'Cormorant Garamond',serif; font-size:1.8rem; font-weight:700; color:var(--brand-brown);">
+            {{ avg_rating }}
+            <span style="font-size:1rem; color:var(--brand-gold);">★</span>
+          </div>
+          <div style="font-size:0.78rem; font-weight:600; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-muted);">Note moyenne</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FILTRES -->
+    <div style="background:#fff; border:1px solid rgba(74,44,23,0.1); border-radius:2px; padding:1rem 1.5rem; margin-bottom:1.5rem;">
+      <div class="d-flex flex-wrap gap-3 align-items-center">
+        <span style="font-size:0.78rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--brand-brown);">
+          Filtrer :
+        </span>
+        <button class="btn btn-sm btn-brand filter-btn active-filter" data-filter="all" style="border-radius:0; font-size:0.78rem; padding:4px 12px;">
+          Tous
+        </button>
+        <button class="btn btn-sm btn-outline-brand filter-btn" data-filter="5" style="border-radius:0; font-size:0.78rem; padding:4px 12px;">
+          ★★★★★
+        </button>
+        <button class="btn btn-sm btn-outline-brand filter-btn" data-filter="4" style="border-radius:0; font-size:0.78rem; padding:4px 12px;">
+          ★★★★
+        </button>
+        <button class="btn btn-sm btn-outline-brand filter-btn" data-filter="3" style="border-radius:0; font-size:0.78rem; padding:4px 12px;">
+          ★★★
+        </button>
+        <button class="btn btn-sm btn-outline-brand filter-btn" data-filter="2" style="border-radius:0; font-size:0.78rem; padding:4px 12px;">
+          ★★
+        </button>
+        <button class="btn btn-sm btn-outline-brand filter-btn" data-filter="1" style="border-radius:0; font-size:0.78rem; padding:4px 12px;">
+          ★
+        </button>
+
+        <div class="ms-auto">
+          <input type="text" id="review-search" placeholder="Rechercher un auteur, produit…"
+                 class="form-control form-control-sm"
+                 style="border-color:rgba(74,44,23,0.2); border-radius:0; font-size:0.85rem; width:240px;">
+        </div>
+      </div>
+    </div>
+
+    <!-- TABLEAU AVIS -->
+    <div style="background:#fff; border-radius:2px; box-shadow:0 2px 12px rgba(74,44,23,0.07); overflow:hidden;">
+
+      <div class="table-responsive">
+        <table class="table table-admin mb-0" id="reviews-table">
+          <thead>
+            <tr>
+              <th style="width:180px;">Produit</th>
+              <th>Auteur</th>
+              <th style="width:90px; text-align:center;">Note</th>
+              <th>Commentaire</th>
+              <th style="width:100px;">Date</th>
+              <th style="width:110px; text-align:center;">Statut</th>
+              <th style="width:120px; text-align:center;">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for review in reviews %}
+            <tr class="review-row" data-rating="{{ review.rating }}" data-author="{{ review.author|lower }}" data-product="{{ review.product_name|lower if review.product_name else '' }}">
+
+              <!-- Produit -->
+              <td>
+                <div class="d-flex align-items-center gap-2">
+                  {% if review.product and review.product.image %}
+                  <img src="{{ review.product.image }}" alt="{{ review.product_name }}"
+                       style="width:36px; height:36px; object-fit:cover; border-radius:2px; flex-shrink:0;">
+                  {% else %}
+                  <div style="width:36px; height:36px; background:var(--brand-cream); border-radius:2px; flex-shrink:0; display:flex; align-items:center; justify-content:center;">
+                    <i class="bi bi-cup-hot" style="color:var(--brand-brown); font-size:0.9rem;"></i>
+                  </div>
+                  {% endif %}
+                  <span style="font-size:0.85rem; font-weight:600; color:var(--brand-brown); line-height:1.3;">
+                    {{ review.product_name if review.product_name else '—' }}
+                  </span>
+                </div>
+              </td>
+
+              <!-- Auteur -->
+              <td>
+                <div style="font-weight:600; color:var(--brand-brown); font-size:0.9rem;">{{ review.author }}</div>
+                {% if review.email %}
+                <div style="font-size:0.78rem; color:var(--text-muted);">{{ review.email }}</div>
+                {% endif %}
+              </td>
+
+              <!-- Note -->
+              <td style="text-align:center;">
+                <div class="stars-display">
+                  {% for i in range(1, 6) %}{% if i <= review.rating %}★{% else %}☆{% endif %}{% endfor %}
+                </div>
+                <div style="font-size:0.78rem; color:var(--text-muted); margin-top:2px;">{{ review.rating }}/5</div>
+              </td>
+
+              <!-- Commentaire -->
+              <td>
+                <p style="font-size:0.87rem; color:var(--text-muted); margin:0; line-height:1.65;
+                           max-width:340px; overflow:hidden; display:-webkit-box;
+                           -webkit-line-clamp:3; -webkit-box-orient:vertical;">
+                  {{ review.comment }}
+                </p>
+              </td>
+
+              <!-- Date -->
+              <td style="color:var(--text-muted); font-size:0.83rem; white-space:nowrap;">
+                {{ review.date.strftime('%d/%m/%Y') if review.date else '—' }}
+              </td>
+
+              <!-- Statut -->
+              <td style="text-align:center;">
+                {% set st = review.status if review.status is defined else 'published' %}
+                <span style="display:inline-block; padding:3px 10px; border-radius:10px; font-size:0.72rem; font-weight:700; text-transform:uppercase; letter-spacing:0.05em;"
+                      class="review-status-{{ st }}">
+                  {% if st == 'published' %}Publié
+                  {% elif st == 'pending' %}En attente
+                  {% elif st == 'rejected' %}Rejeté
+                  {% else %}{{ st }}{% endif %}
+                </span>
+              </td>
+
+              <!-- Actions -->
+              <td style="text-align:center;">
+                <div class="d-flex gap-1 justify-content-center">
+
+                  <!-- Publier -->
+                  <form method="POST" action="{{ url_for('admin_review_action', review_id=review.id) }}" class="m-0">
+                    <input type="hidden" name="action" value="publish">
+                    <button type="submit"
+                            title="Publier"
+                            class="btn btn-sm"
+                            style="background:#e9f7ef; color:#27ae60; border:none; border-radius:0; width:30px; height:28px; padding:0; font-size:0.85rem;"
+                            {% if (review.status if review.status is defined else 'published') == 'published' %}disabled{% endif %}>
+                      <i class="bi bi-check-lg"></i>
+                    </button>
+                  </form>
+
+                  <!-- Rejeter -->
+                  <form method="POST" action="{{ url_for('admin_review_action', review_id=review.id) }}" class="m-0">
+                    <input type="hidden" name="action" value="reject">
+                    <button type="submit"
+                            title="Rejeter"
+                            class="btn btn-sm"
+                            style="background:#fef9e7; color:#f39c12; border:none; border-radius:0; width:30px; height:28px; padding:0; font-size:0.85rem;"
+                            {% if (review.status if review.status is defined else '') == 'rejected' %}disabled{% endif %}>
+                      <i class="bi bi-slash-circle"></i>
+                    </button>
+                  </form>
+
+                  <!-- Supprimer -->
+                  <form method="POST" action="{{ url_for('admin_review_action', review_id=review.id) }}" class="m-0"
+                        onsubmit="return confirm('Supprimer définitivement cet avis ?')">
+                    <input type="hidden" name="action" value="delete">
+                    <button type="submit"
+                            title="Supprimer"
+                            class="btn btn-sm"
+                            style="background:#fdedec; color:#c0392b; border:none; border-radius:0; width:30px; height:28px; padding:0; font-size:0.85rem;">
+                      <i class="bi bi-trash3"></i>
+                    </button>
+                  </form>
+
+                </div>
+              </td>
+
+            </tr>
+            {% else %}
+            <tr>
+              <td colspan="7" class="text-center py-5" style="color:var(--text-muted);">
+                <i class="bi bi-star fs-2 d-block mb-2" style="opacity:0.3;"></i>
+                Aucun avis pour le moment.
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+
+      {% if reviews %}
+      <div class="px-4 py-3 d-flex justify-content-between align-items-center"
+           style="background:var(--brand-light); border-top:1px solid rgba(74,44,23,0.08); font-size:0.82rem; color:var(--text-muted);">
+        <span id="visible-count">{{ reviews|length }} avis affichés</span>
+        <a href="{{ url_for('admin_dashboard') }}"
+           style="color:var(--brand-gold); text-decoration:none; font-size:0.82rem;">
+          <i class="bi bi-arrow-left me-1"></i>Retour au dashboard
+        </a>
+      </div>
+      {% endif %}
+
+    </div>
+
+  </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  // Filtre par note
+  const filterBtns = document.querySelectorAll('.filter-btn');
+  filterBtns.forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      filterBtns.forEach(function(b) {
+        b.classList.remove('btn-brand', 'active-filter');
+        b.classList.add('btn-outline-brand');
+      });
+      this.classList.add('btn-brand', 'active-filter');
+      this.classList.remove('btn-outline-brand');
+
+      const filter = this.getAttribute('data-filter');
+      filterRows();
+    });
+  });
+
+  // Recherche texte
+  document.getElementById('review-search').addEventListener('input', function() {
+    filterRows();
+  });
+
+  function filterRows() {
+    const ratingFilter = document.querySelector('.active-filter')?.getAttribute('data-filter') || 'all';
+    const searchVal    = document.getElementById('review-search').value.toLowerCase().trim();
+    let visible = 0;
+
+    document.querySelectorAll('.review-row').forEach(function(row) {
+      const rating  = row.getAttribute('data-rating');
+      const author  = row.getAttribute('data-author') || '';
+      const product = row.getAttribute('data-product') || '';
+      const text    = row.innerText.toLowerCase();
+
+      const matchRating = (ratingFilter === 'all' || rating === ratingFilter);
+      const matchSearch = (!searchVal || author.includes(searchVal) || product.includes(searchVal) || text.includes(searchVal));
+
+      if (matchRating && matchSearch) {
+        row.style.display = '';
+        visible++;
+      } else {
+        row.style.display = 'none';
+      }
+    });
+
+    const countEl = document.getElementById('visible-count');
+    if (countEl) countEl.textContent = visible + ' avis affichés';
+  }
+</script>
+{% endblock %}

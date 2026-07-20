@@ -1,0 +1,312 @@
+{% extends "base.html" %}
+
+{% block title %}Mon Panier — Cà Phê Việt{% endblock %}
+
+{% block content %}
+
+<!-- Header -->
+<div style="background: linear-gradient(135deg, var(--brand-brown) 0%, var(--brand-dark) 100%);
+            padding: 56px 0 40px;">
+  <div class="container">
+    <p class="section-label" style="color:rgba(212,168,71,0.85);">Étape 1 sur 3</p>
+    <h1 style="color:#fff; font-size:clamp(1.8rem, 3.5vw, 2.8rem);">
+      <i class="bi bi-bag me-2" style="color:var(--brand-gold);"></i>Mon Panier
+    </h1>
+    <p style="color:rgba(245,236,215,0.72); font-size:0.82rem; margin:0.5rem 0 0;">
+      <a href="{{ url_for('index') }}" style="color:rgba(212,168,71,0.7); text-decoration:none;">Accueil</a>
+      &nbsp;/&nbsp; <span style="color:rgba(245,236,215,0.9);">Panier</span>
+    </p>
+  </div>
+</div>
+
+<!-- Étapes checkout -->
+<div style="background:var(--brand-cream); border-bottom:1px solid rgba(74,44,23,0.1);">
+  <div class="container py-3">
+    <div class="d-flex align-items-center gap-0 justify-content-center" style="font-size:0.8rem; letter-spacing:0.06em; text-transform:uppercase; font-weight:600;">
+      <span style="color:var(--brand-brown); display:flex; align-items:center; gap:6px;">
+        <span style="width:24px; height:24px; background:var(--brand-brown); color:var(--brand-gold); border-radius:50%; display:inline-flex; align-items:center; justify-content:center; font-size:0.75rem;">1</span>
+        Panier
+      </span>
+      <span style="width:48px; height:2px; background:rgba(74,44,23,0.2); display:inline-block; margin:0 12px;"></span>
+      <span style="color:var(--text-muted); display:flex; align-items:center; gap:6px;">
+        <span style="width:24px; height:24px; background:rgba(74,44,23,0.15); color:var(--text-muted); border-radius:50%; display:inline-flex; align-items:center; justify-content:center; font-size:0.75rem;">2</span>
+        Commande
+      </span>
+      <span style="width:48px; height:2px; background:rgba(74,44,23,0.2); display:inline-block; margin:0 12px;"></span>
+      <span style="color:var(--text-muted); display:flex; align-items:center; gap:6px;">
+        <span style="width:24px; height:24px; background:rgba(74,44,23,0.15); color:var(--text-muted); border-radius:50%; display:inline-flex; align-items:center; justify-content:center; font-size:0.75rem;">3</span>
+        Confirmation
+      </span>
+    </div>
+  </div>
+</div>
+
+<section style="padding: 56px 0 80px; background:var(--brand-light);">
+  <div class="container">
+
+    {% if cart_items %}
+
+    <div class="row g-5 align-items-start">
+
+      <!-- TABLE PANIER -->
+      <div class="col-lg-8">
+        <form method="POST" action="{{ url_for('cart_update') }}" id="cart-form">
+
+          <div style="background:#fff; border:1px solid rgba(74,44,23,0.1); border-radius:2px; overflow:hidden;">
+
+            <!-- En-têtes -->
+            <div class="d-none d-md-grid px-4 py-3"
+                 style="display:grid; grid-template-columns: 80px 1fr 120px 120px 100px 40px;
+                        gap:1rem; align-items:center; background:var(--brand-cream);
+                        border-bottom:1px solid rgba(74,44,23,0.1);">
+              <div></div>
+              <div style="font-size:0.75rem; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--brand-brown);">Produit</div>
+              <div style="font-size:0.75rem; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--brand-brown); text-align:center;">Prix unit.</div>
+              <div style="font-size:0.75rem; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--brand-brown); text-align:center;">Quantité</div>
+              <div style="font-size:0.75rem; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--brand-brown); text-align:right;">Sous-total</div>
+              <div></div>
+            </div>
+
+            <!-- Lignes produits -->
+            {% for item in cart_items %}
+            <div class="d-flex flex-wrap gap-3 px-4 py-4 align-items-center
+                        {% if not loop.last %}border-bottom{% endif %}"
+                 style="border-color:rgba(74,44,23,0.08) !important;">
+
+              <!-- Image -->
+              <div style="flex:0 0 80px;">
+                <img src="{{ item.product.image if item.product.image else '/static/images/product-placeholder.jpg' }}"
+                     alt="{{ item.product.name }}"
+                     style="width:80px; height:80px; object-fit:cover; border-radius:2px;
+                            box-shadow:0 2px 8px rgba(74,44,23,0.1);">
+              </div>
+
+              <!-- Nom + cat -->
+              <div style="flex:1; min-width:150px;">
+                <p class="section-label mb-1" style="font-size:0.65rem;">
+                  {{ item.product.category if item.product.category else 'Café' }}
+                </p>
+                <a href="{{ url_for('product_detail', pid=item.product.id) }}"
+                   style="font-family:'Cormorant Garamond',serif; font-size:1.1rem; font-weight:600;
+                          color:var(--brand-brown); text-decoration:none; line-height:1.3;">
+                  {{ item.product.name }}
+                </a>
+                {% if item.product.weight %}
+                <p style="font-size:0.78rem; color:var(--text-muted); margin:2px 0 0;">{{ item.product.weight }}</p>
+                {% endif %}
+              </div>
+
+              <!-- Prix unitaire -->
+              <div style="flex:0 0 110px; text-align:center;">
+                <span style="font-family:'Cormorant Garamond',serif; font-size:1.1rem; font-weight:600; color:var(--text-muted);">
+                  {{ "%.2f"|format(item.product.price) }} €
+                </span>
+              </div>
+
+              <!-- Quantité -->
+              <div style="flex:0 0 120px; text-align:center;">
+                <div class="d-flex align-items-center justify-content-center"
+                     style="border:1px solid rgba(74,44,23,0.2); display:inline-flex !important;">
+                  <button type="button" class="qty-minus-btn"
+                          data-line="{{ item.id }}"
+                          style="background:none; border:none; width:32px; height:36px; font-size:1rem; cursor:pointer; color:var(--brand-brown);">−</button>
+                  <input type="number" name="qty_{{ item.id }}" value="{{ item.qty }}" min="1" max="99"
+                         style="width:44px; text-align:center; border:none; outline:none;
+                                font-size:0.95rem; font-weight:600; color:var(--brand-brown);">
+                  <button type="button" class="qty-plus-btn"
+                          data-line="{{ item.id }}"
+                          style="background:none; border:none; width:32px; height:36px; font-size:1rem; cursor:pointer; color:var(--brand-brown);">+</button>
+                </div>
+              </div>
+
+              <!-- Sous-total -->
+              <div style="flex:0 0 100px; text-align:right;">
+                <span style="font-family:'Cormorant Garamond',serif; font-size:1.2rem; font-weight:700; color:var(--brand-brown);">
+                  {{ "%.2f"|format(item.product.price * item.qty) }} €
+                </span>
+              </div>
+
+              <!-- Supprimer -->
+              <div style="flex:0 0 40px; text-align:right;">
+                <a href="{{ url_for('cart_remove', item_id=item.id) }}"
+                   title="Supprimer"
+                   onclick="return confirm('Retirer ce produit du panier ?')"
+                   style="color:rgba(74,44,23,0.35); font-size:1.1rem; text-decoration:none;
+                          transition:color 0.2s;"
+                   onmouseover="this.style.color='#c0392b'"
+                   onmouseout="this.style.color='rgba(74,44,23,0.35)'">
+                  <i class="bi bi-trash3"></i>
+                </a>
+              </div>
+
+            </div>
+            {% endfor %}
+
+          </div>
+
+          <!-- Actions -->
+          <div class="d-flex flex-wrap gap-3 justify-content-between mt-3">
+            <a href="{{ url_for('products') }}"
+               style="font-size:0.85rem; color:var(--text-muted); text-decoration:none; display:flex; align-items:center; gap:6px;">
+              <i class="bi bi-arrow-left"></i> Continuer mes achats
+            </a>
+            <button type="submit" class="btn-outline-brand btn py-2 px-4">
+              <i class="bi bi-arrow-repeat me-1"></i> Mettre à jour le panier
+            </button>
+          </div>
+
+        </form>
+
+        <!-- Code promo -->
+        <div class="mt-4 p-4" style="background:#fff; border:1px solid rgba(74,44,23,0.1);">
+          <h5 style="color:var(--brand-brown); font-size:1rem; margin-bottom:0.75rem;">
+            <i class="bi bi-tag me-1" style="color:var(--brand-gold);"></i>Code promo
+          </h5>
+          <form class="d-flex gap-2" method="POST" action="{{ url_for('apply_coupon') if 'apply_coupon' in dir() else '#' }}">
+            <input type="text" name="coupon" placeholder="Entrez votre code…"
+                   class="form-control" style="border-color:rgba(74,44,23,0.25); border-radius:0; font-size:0.9rem; max-width:240px;">
+            <button type="submit" class="btn-outline-brand btn py-2 px-3">
+              Appliquer
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <!-- RÉCAPITULATIF -->
+      <div class="col-lg-4">
+        <div style="background:#fff; border:1px solid rgba(74,44,23,0.1); border-radius:2px; position:sticky; top:90px;">
+          <div style="background:var(--brand-brown); padding:1.1rem 1.4rem;">
+            <h3 style="color:var(--brand-gold); font-size:1.2rem; margin:0;">Récapitulatif</h3>
+          </div>
+
+          <div class="p-4">
+
+            <!-- Lignes items -->
+            {% for item in cart_items %}
+            <div class="d-flex justify-content-between align-items-start mb-2"
+                 style="font-size:0.88rem;">
+              <span style="color:var(--text-muted); flex:1; padding-right:1rem;">
+                {{ item.product.name }}
+                <small style="display:block; color:rgba(122,92,69,0.6);">× {{ item.qty }}</small>
+              </span>
+              <span style="color:var(--brand-brown); font-weight:600; white-space:nowrap;">
+                {{ "%.2f"|format(item.product.price * item.qty) }} €
+              </span>
+            </div>
+            {% endfor %}
+
+            <hr style="border-color:rgba(74,44,23,0.12); margin: 1rem 0;">
+
+            <!-- Sous-total -->
+            <div class="d-flex justify-content-between mb-2" style="font-size:0.9rem;">
+              <span style="color:var(--text-muted);">Sous-total</span>
+              <span style="color:var(--brand-brown); font-weight:600;">{{ "%.2f"|format(subtotal) }} €</span>
+            </div>
+
+            <!-- Livraison -->
+            <div class="d-flex justify-content-between mb-2" style="font-size:0.9rem;">
+              <span style="color:var(--text-muted);">Livraison</span>
+              {% if subtotal >= 40 %}
+              <span style="color:#27ae60; font-weight:600;">Gratuite</span>
+              {% else %}
+              <span style="color:var(--brand-brown); font-weight:600;">{{ "%.2f"|format(shipping) }} €</span>
+              {% endif %}
+            </div>
+
+            {% if subtotal < 40 %}
+            <div class="mb-2 px-3 py-2" style="background:var(--brand-light); font-size:0.8rem; color:var(--text-muted);">
+              <i class="bi bi-info-circle me-1"></i>
+              Il manque <strong>{{ "%.2f"|format(40 - subtotal) }} €</strong> pour la livraison gratuite.
+            </div>
+            {% endif %}
+
+            <!-- Remise si coupon -->
+            {% if discount and discount > 0 %}
+            <div class="d-flex justify-content-between mb-2" style="font-size:0.9rem;">
+              <span style="color:#27ae60;">Remise coupon</span>
+              <span style="color:#27ae60; font-weight:600;">−{{ "%.2f"|format(discount) }} €</span>
+            </div>
+            {% endif %}
+
+            <hr style="border-color:rgba(74,44,23,0.12); margin: 1rem 0;">
+
+            <!-- Total -->
+            <div class="d-flex justify-content-between align-items-baseline">
+              <span style="font-family:'Cormorant Garamond',serif; font-size:1.1rem; font-weight:600; color:var(--brand-brown);">Total TTC</span>
+              <span style="font-family:'Cormorant Garamond',serif; font-size:1.6rem; font-weight:700; color:var(--brand-brown);">
+                {{ "%.2f"|format(total) }} €
+              </span>
+            </div>
+            <p style="font-size:0.75rem; color:var(--text-muted); text-align:right; margin-top:2px;">
+              TVA incluse
+            </p>
+
+            <a href="{{ url_for('checkout') }}" class="btn-brand btn w-100 py-3 mt-3 text-center">
+              Commander &nbsp;<i class="bi bi-arrow-right"></i>
+            </a>
+
+            <!-- Paiement sécurisé -->
+            <div class="text-center mt-3">
+              <p style="font-size:0.75rem; color:var(--text-muted); margin:0;">
+                <i class="bi bi-lock-fill me-1" style="color:var(--brand-gold);"></i>
+                Paiement 100 % sécurisé · SSL
+              </p>
+              <div class="d-flex justify-content-center gap-2 mt-2">
+                <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/visa.svg"
+                     alt="Visa" style="height:20px; opacity:0.4;">
+                <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/mastercard.svg"
+                     alt="Mastercard" style="height:20px; opacity:0.4;">
+                <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/paypal.svg"
+                     alt="PayPal" style="height:20px; opacity:0.4;">
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    {% else %}
+
+    <!-- Panier vide -->
+    <div class="text-center py-5" style="padding: 80px 0 !important;">
+      <div style="font-size: 5rem; margin-bottom: 1.5rem; opacity:0.35;">🛒</div>
+      <h2 style="color:var(--brand-brown); font-size:1.8rem; margin-bottom:0.75rem;">Votre panier est vide</h2>
+      <p style="color:var(--text-muted); max-width:400px; margin:0 auto 2rem; font-size:0.95rem;">
+        Découvrez notre sélection de cafés vietnamiens et ajoutez vos produits favoris au panier.
+      </p>
+      <a href="{{ url_for('products') }}" class="btn-brand btn px-5 py-3">
+        Découvrir nos cafés &nbsp;<i class="bi bi-arrow-right"></i>
+      </a>
+    </div>
+
+    {% endif %}
+
+  </div>
+</section>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  // +/- quantity buttons
+  document.querySelectorAll('.qty-minus-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      const lineId = this.getAttribute('data-line');
+      const input = document.querySelector('input[name="qty_' + lineId + '"]');
+      const val = parseInt(input.value);
+      if (val > 1) input.value = val - 1;
+    });
+  });
+
+  document.querySelectorAll('.qty-plus-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      const lineId = this.getAttribute('data-line');
+      const input = document.querySelector('input[name="qty_' + lineId + '"]');
+      const val = parseInt(input.value);
+      if (val < 99) input.value = val + 1;
+    });
+  });
+</script>
+{% endblock %}

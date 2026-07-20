@@ -1,0 +1,297 @@
+{% extends "base.html" %}
+
+{% block title %}Commander — Cà Phê Việt{% endblock %}
+
+{% block content %}
+
+<!-- Header -->
+<div style="background: linear-gradient(135deg, var(--brand-brown) 0%, var(--brand-dark) 100%);
+            padding: 56px 0 40px;">
+  <div class="container">
+    <p class="section-label" style="color:rgba(212,168,71,0.85);">Étape 2 sur 3</p>
+    <h1 style="color:#fff; font-size:clamp(1.8rem, 3.5vw, 2.8rem);">
+      <i class="bi bi-box-seam me-2" style="color:var(--brand-gold);"></i>Votre Commande
+    </h1>
+    <p style="color:rgba(245,236,215,0.72); font-size:0.82rem; margin:0.5rem 0 0;">
+      <a href="{{ url_for('index') }}" style="color:rgba(212,168,71,0.7); text-decoration:none;">Accueil</a>
+      &nbsp;/&nbsp;
+      <a href="{{ url_for('cart') }}" style="color:rgba(212,168,71,0.7); text-decoration:none;">Panier</a>
+      &nbsp;/&nbsp; <span style="color:rgba(245,236,215,0.9);">Commande</span>
+    </p>
+  </div>
+</div>
+
+<!-- Progress bar -->
+<div style="background:var(--brand-cream); border-bottom:1px solid rgba(74,44,23,0.1);">
+  <div class="container py-3">
+    <div class="d-flex align-items-center gap-0 justify-content-center" style="font-size:0.8rem; letter-spacing:0.06em; text-transform:uppercase; font-weight:600;">
+      <span style="color:var(--text-muted); display:flex; align-items:center; gap:6px;">
+        <span style="width:24px; height:24px; background:var(--brand-gold); color:var(--brand-dark); border-radius:50%; display:inline-flex; align-items:center; justify-content:center; font-size:0.75rem;">
+          <i class="bi bi-check"></i>
+        </span>
+        Panier
+      </span>
+      <span style="width:48px; height:2px; background:var(--brand-gold); display:inline-block; margin:0 12px;"></span>
+      <span style="color:var(--brand-brown); display:flex; align-items:center; gap:6px;">
+        <span style="width:24px; height:24px; background:var(--brand-brown); color:var(--brand-gold); border-radius:50%; display:inline-flex; align-items:center; justify-content:center; font-size:0.75rem;">2</span>
+        Commande
+      </span>
+      <span style="width:48px; height:2px; background:rgba(74,44,23,0.2); display:inline-block; margin:0 12px;"></span>
+      <span style="color:var(--text-muted); display:flex; align-items:center; gap:6px;">
+        <span style="width:24px; height:24px; background:rgba(74,44,23,0.15); color:var(--text-muted); border-radius:50%; display:inline-flex; align-items:center; justify-content:center; font-size:0.75rem;">3</span>
+        Confirmation
+      </span>
+    </div>
+  </div>
+</div>
+
+<section style="padding: 56px 0 80px; background:var(--brand-light);">
+  <div class="container">
+    <div class="row g-5 align-items-start">
+
+      <!-- FORMULAIRE LIVRAISON -->
+      <div class="col-lg-7">
+        <form method="POST" action="{{ url_for('checkout') }}" id="checkout-form" novalidate>
+
+          <!-- Coordonnées personnelles -->
+          <div class="mb-4 p-4" style="background:#fff; border:1px solid rgba(74,44,23,0.1); border-radius:2px;">
+            <h3 style="font-size:1.2rem; color:var(--brand-brown); margin-bottom:1.2rem; padding-bottom:0.75rem; border-bottom:1px solid rgba(74,44,23,0.1);">
+              <i class="bi bi-person me-2" style="color:var(--brand-gold);"></i>
+              Coordonnées personnelles
+            </h3>
+
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label" style="font-size:0.78rem; font-weight:600; letter-spacing:0.08em; text-transform:uppercase; color:var(--brand-brown);">
+                  Prénom &amp; Nom <span style="color:#c0392b;">*</span>
+                </label>
+                <input type="text" name="name" required
+                       placeholder="Jean Dupont"
+                       class="form-control"
+                       style="border-color:rgba(74,44,23,0.25); border-radius:0; font-size:0.9rem;"
+                       value="{{ form_data.name if form_data else '' }}">
+                <div class="invalid-feedback">Veuillez entrer votre nom.</div>
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label" style="font-size:0.78rem; font-weight:600; letter-spacing:0.08em; text-transform:uppercase; color:var(--brand-brown);">
+                  Téléphone <span style="color:#c0392b;">*</span>
+                </label>
+                <input type="tel" name="phone" required
+                       placeholder="+33 6 12 34 56 78"
+                       class="form-control"
+                       style="border-color:rgba(74,44,23,0.25); border-radius:0; font-size:0.9rem;"
+                       value="{{ form_data.phone if form_data else '' }}">
+                <div class="invalid-feedback">Veuillez entrer votre téléphone.</div>
+              </div>
+
+              <div class="col-12">
+                <label class="form-label" style="font-size:0.78rem; font-weight:600; letter-spacing:0.08em; text-transform:uppercase; color:var(--brand-brown);">
+                  Adresse email <span style="color:#c0392b;">*</span>
+                </label>
+                <input type="email" name="email" required
+                       placeholder="jean@example.fr"
+                       class="form-control"
+                       style="border-color:rgba(74,44,23,0.25); border-radius:0; font-size:0.9rem;"
+                       value="{{ form_data.email if form_data else '' }}">
+                <div class="invalid-feedback">Veuillez entrer une adresse email valide.</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Adresse de livraison -->
+          <div class="mb-4 p-4" style="background:#fff; border:1px solid rgba(74,44,23,0.1); border-radius:2px;">
+            <h3 style="font-size:1.2rem; color:var(--brand-brown); margin-bottom:1.2rem; padding-bottom:0.75rem; border-bottom:1px solid rgba(74,44,23,0.1);">
+              <i class="bi bi-geo-alt me-2" style="color:var(--brand-gold);"></i>
+              Adresse de livraison
+            </h3>
+
+            <div class="row g-3">
+              <div class="col-12">
+                <label class="form-label" style="font-size:0.78rem; font-weight:600; letter-spacing:0.08em; text-transform:uppercase; color:var(--brand-brown);">
+                  Adresse <span style="color:#c0392b;">*</span>
+                </label>
+                <input type="text" name="address" required
+                       placeholder="15 Rue de la Paix"
+                       class="form-control"
+                       style="border-color:rgba(74,44,23,0.25); border-radius:0; font-size:0.9rem;"
+                       value="{{ form_data.address if form_data else '' }}">
+                <div class="invalid-feedback">Veuillez entrer votre adresse.</div>
+              </div>
+
+              <div class="col-md-4">
+                <label class="form-label" style="font-size:0.78rem; font-weight:600; letter-spacing:0.08em; text-transform:uppercase; color:var(--brand-brown);">
+                  Code postal <span style="color:#c0392b;">*</span>
+                </label>
+                <input type="text" name="postal_code" required
+                       placeholder="75001"
+                       class="form-control"
+                       style="border-color:rgba(74,44,23,0.25); border-radius:0; font-size:0.9rem;"
+                       value="{{ form_data.postal_code if form_data else '' }}">
+              </div>
+
+              <div class="col-md-8">
+                <label class="form-label" style="font-size:0.78rem; font-weight:600; letter-spacing:0.08em; text-transform:uppercase; color:var(--brand-brown);">
+                  Ville <span style="color:#c0392b;">*</span>
+                </label>
+                <input type="text" name="city" required
+                       placeholder="Paris"
+                       class="form-control"
+                       style="border-color:rgba(74,44,23,0.25); border-radius:0; font-size:0.9rem;"
+                       value="{{ form_data.city if form_data else '' }}">
+                <div class="invalid-feedback">Veuillez entrer votre ville.</div>
+              </div>
+
+              <div class="col-12">
+                <label class="form-label" style="font-size:0.78rem; font-weight:600; letter-spacing:0.08em; text-transform:uppercase; color:var(--brand-brown);">
+                  Pays <span style="color:#c0392b;">*</span>
+                </label>
+                <select name="country" required class="form-select"
+                        style="border-color:rgba(74,44,23,0.25); border-radius:0; font-size:0.9rem;">
+                  <option value="" disabled {% if not (form_data and form_data.country) %}selected{% endif %}>Sélectionnez un pays…</option>
+                  <option value="FR" {% if form_data and form_data.country == 'FR' %}selected{% endif %}>🇫🇷 France</option>
+                  <option value="BE" {% if form_data and form_data.country == 'BE' %}selected{% endif %}>🇧🇪 Belgique</option>
+                  <option value="CH" {% if form_data and form_data.country == 'CH' %}selected{% endif %}>🇨🇭 Suisse</option>
+                  <option value="LU" {% if form_data and form_data.country == 'LU' %}selected{% endif %}>🇱🇺 Luxembourg</option>
+                  <option value="DE" {% if form_data and form_data.country == 'DE' %}selected{% endif %}>🇩🇪 Allemagne</option>
+                  <option value="IT" {% if form_data and form_data.country == 'IT' %}selected{% endif %}>🇮🇹 Italie</option>
+                  <option value="ES" {% if form_data and form_data.country == 'ES' %}selected{% endif %}>🇪🇸 Espagne</option>
+                  <option value="NL" {% if form_data and form_data.country == 'NL' %}selected{% endif %}>🇳🇱 Pays-Bas</option>
+                  <option value="PT" {% if form_data and form_data.country == 'PT' %}selected{% endif %}>🇵🇹 Portugal</option>
+                  <option value="VN" {% if form_data and form_data.country == 'VN' %}selected{% endif %}>🇻🇳 Vietnam</option>
+                </select>
+                <div class="invalid-feedback">Veuillez sélectionner un pays.</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Note -->
+          <div class="mb-4 p-4" style="background:#fff; border:1px solid rgba(74,44,23,0.1); border-radius:2px;">
+            <h3 style="font-size:1.2rem; color:var(--brand-brown); margin-bottom:1.2rem; padding-bottom:0.75rem; border-bottom:1px solid rgba(74,44,23,0.1);">
+              <i class="bi bi-chat-text me-2" style="color:var(--brand-gold);"></i>
+              Note pour la commande <small style="font-size:0.75rem; font-weight:400; color:var(--text-muted);">(optionnel)</small>
+            </h3>
+            <textarea name="note" rows="3"
+                      placeholder="Instructions de livraison, mouture souhaitée, message spécial…"
+                      class="form-control"
+                      style="border-color:rgba(74,44,23,0.25); border-radius:0; font-size:0.9rem; resize:vertical;">{{ form_data.note if form_data else '' }}</textarea>
+          </div>
+
+          <!-- Bouton submit mobile (réservé pour desktop → bouton dans sidebar) -->
+          <div class="d-lg-none">
+            <button type="submit" class="btn-brand btn w-100 py-3">
+              <i class="bi bi-check-circle me-2"></i>Confirmer la commande
+            </button>
+          </div>
+
+        </form>
+      </div>
+
+      <!-- RÉCAPITULATIF COMMANDE -->
+      <div class="col-lg-5">
+        <div style="position:sticky; top:90px;">
+
+          <div style="background:#fff; border:1px solid rgba(74,44,23,0.1); border-radius:2px; overflow:hidden;">
+            <div style="background:var(--brand-brown); padding:1.1rem 1.4rem;">
+              <h3 style="color:var(--brand-gold); font-size:1.2rem; margin:0;">
+                <i class="bi bi-bag me-2"></i>Récapitulatif
+              </h3>
+            </div>
+
+            <div class="p-4">
+              <!-- Items -->
+              {% for item in cart_items %}
+              <div class="d-flex align-items-center gap-3 mb-3">
+                <div style="position:relative; flex-shrink:0;">
+                  <img src="{{ item.product.image if item.product.image else '/static/images/product-placeholder.jpg' }}"
+                       alt="{{ item.product.name }}"
+                       style="width:52px; height:52px; object-fit:cover; border-radius:2px;">
+                  <span style="position:absolute; top:-6px; right:-6px; background:var(--brand-brown);
+                               color:var(--brand-gold); width:20px; height:20px; border-radius:50%;
+                               font-size:0.65rem; font-weight:700; display:flex; align-items:center; justify-content:center;">
+                    {{ item.qty }}
+                  </span>
+                </div>
+                <div style="flex:1;">
+                  <p style="font-size:0.88rem; font-weight:600; color:var(--brand-brown); margin:0; line-height:1.3;">{{ item.product.name }}</p>
+                  <p style="font-size:0.78rem; color:var(--text-muted); margin:0;">{{ item.product.weight if item.product.weight else '' }}</p>
+                </div>
+                <span style="font-size:0.95rem; font-weight:700; color:var(--brand-brown); white-space:nowrap;">
+                  {{ "%.2f"|format(item.product.price * item.qty) }} €
+                </span>
+              </div>
+              {% endfor %}
+
+              <hr style="border-color:rgba(74,44,23,0.12); margin:1rem 0;">
+
+              <!-- Totaux -->
+              <div class="d-flex justify-content-between mb-2" style="font-size:0.88rem;">
+                <span style="color:var(--text-muted);">Sous-total</span>
+                <span style="color:var(--brand-brown); font-weight:600;">{{ "%.2f"|format(subtotal) }} €</span>
+              </div>
+              <div class="d-flex justify-content-between mb-2" style="font-size:0.88rem;">
+                <span style="color:var(--text-muted);">Livraison</span>
+                {% if subtotal >= 40 %}
+                <span style="color:#27ae60; font-weight:600;">Gratuite</span>
+                {% else %}
+                <span style="color:var(--brand-brown); font-weight:600;">{{ "%.2f"|format(shipping) }} €</span>
+                {% endif %}
+              </div>
+
+              <hr style="border-color:rgba(74,44,23,0.12); margin:1rem 0;">
+
+              <div class="d-flex justify-content-between align-items-baseline mb-4">
+                <span style="font-family:'Cormorant Garamond',serif; font-size:1.15rem; font-weight:600; color:var(--brand-brown);">Total TTC</span>
+                <span style="font-family:'Cormorant Garamond',serif; font-size:1.75rem; font-weight:700; color:var(--brand-brown);">
+                  {{ "%.2f"|format(total) }} €
+                </span>
+              </div>
+
+              <!-- Bouton principal -->
+              <button type="submit" form="checkout-form" class="btn-brand btn w-100 py-3">
+                <i class="bi bi-check-circle me-2"></i>Confirmer la commande
+              </button>
+
+              <div class="text-center mt-3">
+                <p style="font-size:0.75rem; color:var(--text-muted); margin:0;">
+                  <i class="bi bi-lock-fill me-1" style="color:var(--brand-gold);"></i>
+                  Commande sécurisée — Vos données sont protégées
+                </p>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Retour panier -->
+          <div class="text-center mt-3">
+            <a href="{{ url_for('cart') }}"
+               style="font-size:0.85rem; color:var(--text-muted); text-decoration:none;">
+              <i class="bi bi-arrow-left me-1"></i> Retour au panier
+            </a>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  // Bootstrap form validation
+  (function() {
+    'use strict';
+    const form = document.getElementById('checkout-form');
+    form.addEventListener('submit', function(e) {
+      if (!form.checkValidity()) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+      form.classList.add('was-validated');
+    });
+  })();
+</script>
+{% endblock %}

@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Cà Phê Việt — Café vietnamien artisanal{% endblock %}</title>
+
+  <!-- Bootstrap 5 CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+  <!-- Bootstrap Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    /* ============================================================
+       VARIABLES BRAND
+    ============================================================ */
+    :root {
+      --brand-brown:  #4A2C17;
+      --brand-gold:   #D4A847;
+      --brand-cream:  #F5ECD7;
+      --brand-dark:   #2E1A0E;
+      --brand-light:  #FAF4E8;
+      --text-main:    #2C1A0E;
+      --text-muted:   #7A5C45;
+    }
+
+    /* ============================================================
+       TYPOGRAPHIE
+    ============================================================ */
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #fff;
+      color: var(--text-main);
+      font-size: 15px;
+      line-height: 1.7;
+    }
+
+    h1, h2, h3, h4, h5, .display-1, .display-2, .display-3,
+    .display-4, .display-5, .display-6, .navbar-brand {
+      font-family: 'Cormorant Garamond', serif;
+    }
+
+    h1 { font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 600; }
+    h2 { font-size: clamp(1.6rem, 3.5vw, 2.5rem); font-weight: 600; }
+    h3 { font-size: clamp(1.2rem, 2.5vw, 1.75rem); font-weight: 500; }
+
+    /* ============================================================
+       NAVBAR
+    ============================================================ */
+    .navbar-brand-logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.65rem;
+      font-weight: 700;
+      color: var(--brand-gold) !important;
+      letter-spacing: 0.04em;
+      text-decoration: none;
+      line-height: 1;
+    }
+
+    .navbar-brand-logo .sub {
+      display: block;
+      font-size: 0.65rem;
+      font-family: 'Inter', sans-serif;
+      font-weight: 300;
+      letter-spacing: 0.18em;
+      color: rgba(245, 236, 215, 0.75);
+      text-transform: uppercase;
+      margin-top: -2px;
+    }
+
+    .navbar {
+      background-color: var(--brand-brown) !important;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.25);
+      padding: 0.75rem 0;
+    }
+
+    .navbar .nav-link {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.82rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: rgba(245, 236, 215, 0.88) !important;
+      padding: 0.5rem 1rem !important;
+      transition: color 0.2s;
+      position: relative;
+    }
+
+    .navbar .nav-link:hover,
+    .navbar .nav-link.active {
+      color: var(--brand-gold) !important;
+    }
+
+    .navbar .nav-link::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 1rem;
+      right: 1rem;
+      height: 2px;
+      background: var(--brand-gold);
+      transform: scaleX(0);
+      transition: transform 0.2s;
+    }
+
+    .navbar .nav-link:hover::after,
+    .navbar .nav-link.active::after {
+      transform: scaleX(1);
+    }
+
+    .navbar-toggler {
+      border-color: rgba(212, 168, 71, 0.5);
+    }
+
+    .navbar-toggler-icon {
+      background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(212,168,71,0.9)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e") !important;
+    }
+
+    /* Cart badge */
+    .cart-badge {
+      background: var(--brand-gold);
+      color: var(--brand-dark);
+      font-size: 0.65rem;
+      font-weight: 700;
+      padding: 2px 5px;
+      border-radius: 10px;
+      vertical-align: super;
+      line-height: 1;
+      font-family: 'Inter', sans-serif;
+    }
+
+    /* ============================================================
+       BOUTONS
+    ============================================================ */
+    .btn-brand {
+      background-color: var(--brand-brown);
+      color: var(--brand-cream);
+      border: 2px solid var(--brand-brown);
+      font-family: 'Inter', sans-serif;
+      font-size: 0.82rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 0.65rem 1.75rem;
+      border-radius: 0;
+      transition: all 0.2s;
+    }
+
+    .btn-brand:hover {
+      background-color: transparent;
+      color: var(--brand-brown);
+      border-color: var(--brand-brown);
+    }
+
+    .btn-gold {
+      background-color: var(--brand-gold);
+      color: var(--brand-dark);
+      border: 2px solid var(--brand-gold);
+      font-family: 'Inter', sans-serif;
+      font-size: 0.82rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 0.65rem 1.75rem;
+      border-radius: 0;
+      transition: all 0.2s;
+    }
+
+    .btn-gold:hover {
+      background-color: transparent;
+      color: var(--brand-gold);
+      border-color: var(--brand-gold);
+    }
+
+    .btn-outline-brand {
+      background-color: transparent;
+      color: var(--brand-brown);
+      border: 2px solid var(--brand-brown);
+      font-family: 'Inter', sans-serif;
+      font-size: 0.82rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 0.65rem 1.75rem;
+      border-radius: 0;
+      transition: all 0.2s;
+    }
+
+    .btn-outline-brand:hover {
+      background-color: var(--brand-brown);
+      color: var(--brand-cream);
+    }
+
+    /* ============================================================
+       FOOTER
+    ============================================================ */
+    footer {
+      background-color: var(--brand-dark);
+      color: rgba(245, 236, 215, 0.8);
+    }
+
+    footer h5 {
+      color: var(--brand-gold);
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+    }
+
+    footer a {
+      color: rgba(245, 236, 215, 0.7);
+      text-decoration: none;
+      font-size: 0.88rem;
+      transition: color 0.2s;
+      display: inline-block;
+      margin-bottom: 0.4rem;
+    }
+
+    footer a:hover {
+      color: var(--brand-gold);
+    }
+
+    .footer-slogan {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 1.35rem;
+      color: var(--brand-gold);
+      letter-spacing: 0.03em;
+    }
+
+    .footer-divider {
+      border-color: rgba(212, 168, 71, 0.2);
+    }
+
+    .footer-bottom {
+      background-color: rgba(0,0,0,0.25);
+      font-size: 0.78rem;
+      color: rgba(245, 236, 215, 0.45);
+    }
+
+    .social-icon {
+      width: 36px;
+      height: 36px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid rgba(212, 168, 71, 0.4);
+      border-radius: 50%;
+      color: var(--brand-gold);
+      font-size: 1rem;
+      transition: all 0.2s;
+      text-decoration: none;
+    }
+
+    .social-icon:hover {
+      background: var(--brand-gold);
+      color: var(--brand-dark);
+      border-color: var(--brand-gold);
+    }
+
+    /* ============================================================
+       CHATBOT WIDGET
+    ============================================================ */
+    #chatbot-btn {
+      position: fixed;
+      bottom: 28px;
+      right: 28px;
+      width: 58px;
+      height: 58px;
+      background: var(--brand-brown);
+      color: var(--brand-gold);
+      border: 2px solid var(--brand-gold);
+      border-radius: 50%;
+      font-size: 1.55rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 1050;
+      box-shadow: 0 4px 18px rgba(74,44,23,0.35);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    #chatbot-btn:hover {
+      transform: scale(1.08);
+      box-shadow: 0 6px 24px rgba(74,44,23,0.45);
+    }
+
+    #chatbot-popup {
+      position: fixed;
+      bottom: 100px;
+      right: 28px;
+      width: 340px;
+      max-height: 480px;
+      background: #fff;
+      border: 1px solid rgba(74,44,23,0.15);
+      border-radius: 12px;
+      box-shadow: 0 8px 32px rgba(74,44,23,0.2);
+      z-index: 1049;
+      display: none;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    #chatbot-popup.open {
+      display: flex;
+    }
+
+    .chatbot-header {
+      background: var(--brand-brown);
+      color: var(--brand-gold);
+      padding: 0.85rem 1rem;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.05rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .chatbot-header .close-chat {
+      background: none;
+      border: none;
+      color: rgba(245,236,215,0.7);
+      font-size: 1.1rem;
+      cursor: pointer;
+      padding: 0;
+      line-height: 1;
+    }
+
+    .chatbot-header .close-chat:hover {
+      color: #fff;
+    }
+
+    .chatbot-messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 0.85rem 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+      background: var(--brand-light);
+      font-size: 0.88rem;
+    }
+
+    .chatbot-messages .msg {
+      max-width: 85%;
+      padding: 0.5rem 0.85rem;
+      border-radius: 10px;
+      line-height: 1.5;
+    }
+
+    .chatbot-messages .msg.bot {
+      background: var(--brand-cream);
+      color: var(--text-main);
+      align-self: flex-start;
+      border-bottom-left-radius: 2px;
+    }
+
+    .chatbot-messages .msg.user {
+      background: var(--brand-brown);
+      color: var(--brand-cream);
+      align-self: flex-end;
+      border-bottom-right-radius: 2px;
+    }
+
+    .chatbot-input-row {
+      display: flex;
+      border-top: 1px solid rgba(74,44,23,0.12);
+      background: #fff;
+    }
+
+    #chat-input {
+      flex: 1;
+      border: none;
+      outline: none;
+      padding: 0.75rem 1rem;
+      font-size: 0.88rem;
+      font-family: 'Inter', sans-serif;
+    }
+
+    #chat-send {
+      background: var(--brand-brown);
+      color: var(--brand-gold);
+      border: none;
+      padding: 0.75rem 1rem;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: background 0.2s;
+    }
+
+    #chat-send:hover {
+      background: var(--brand-dark);
+    }
+
+    /* ============================================================
+       UTILITAIRES
+    ============================================================ */
+    .section-label {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--brand-gold);
+      margin-bottom: 0.5rem;
+    }
+
+    .section-title {
+      font-family: 'Cormorant Garamond', serif;
+      color: var(--brand-brown);
+    }
+
+    .divider-gold {
+      width: 48px;
+      height: 2px;
+      background: var(--brand-gold);
+      margin: 0.75rem 0 1.5rem;
+    }
+
+    .divider-gold.center {
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .bg-cream {
+      background-color: var(--brand-cream);
+    }
+
+    .bg-light-brand {
+      background-color: var(--brand-light);
+    }
+
+    .text-brand {
+      color: var(--brand-brown) !important;
+    }
+
+    .text-gold {
+      color: var(--brand-gold) !important;
+    }
+
+    /* Product card */
+    .product-card {
+      border: 1px solid rgba(74,44,23,0.1);
+      border-radius: 4px;
+      overflow: hidden;
+      transition: box-shadow 0.2s, transform 0.2s;
+      background: #fff;
+    }
+
+    .product-card:hover {
+      box-shadow: 0 6px 24px rgba(74,44,23,0.14);
+      transform: translateY(-3px);
+    }
+
+    .product-card img {
+      width: 100%;
+      height: 220px;
+      object-fit: cover;
+    }
+
+    .product-card .card-body {
+      padding: 1.1rem;
+    }
+
+    .product-card .price {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.35rem;
+      font-weight: 600;
+      color: var(--brand-brown);
+    }
+
+    /* Alerts flash */
+    .flash-container {
+      position: fixed;
+      top: 75px;
+      right: 1rem;
+      z-index: 2000;
+      width: 320px;
+    }
+
+    .flash-container .alert {
+      font-size: 0.88rem;
+      border-radius: 4px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+    }
+
+    /* Scrollbar chatbot */
+    .chatbot-messages::-webkit-scrollbar { width: 4px; }
+    .chatbot-messages::-webkit-scrollbar-track { background: transparent; }
+    .chatbot-messages::-webkit-scrollbar-thumb { background: rgba(74,44,23,0.25); border-radius: 2px; }
+  </style>
+</head>
+<body>
+
+  <!-- ======================================================
+       NAVBAR
+  ====================================================== -->
+  <nav class="navbar navbar-expand-lg sticky-top">
+    <div class="container">
+      <a class="navbar-brand-logo" href="{{ url_for('index') }}">
+        Cà Phê Việt
+        <span class="sub">Café artisanal · France</span>
+      </a>
+
+      <button class="navbar-toggler" type="button"
+              data-bs-toggle="collapse" data-bs-target="#mainNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="mainNav">
+        <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-1">
+          <li class="nav-item">
+            <a class="nav-link {% if request.endpoint == 'index' %}active{% endif %}"
+               href="{{ url_for('index') }}">Accueil</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link {% if request.endpoint == 'products' %}active{% endif %}"
+               href="{{ url_for('products') }}">Produits</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link {% if request.endpoint == 'about' %}active{% endif %}"
+               href="{{ url_for('about') }}">Notre Histoire</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link {% if request.endpoint == 'cart' %}active{% endif %}"
+               href="{{ url_for('cart') }}">
+              <i class="bi bi-bag me-1"></i>Panier
+              {% if cart_count() > 0 %}
+                <span class="cart-badge">{{ cart_count() }}</span>
+              {% endif %}
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ======================================================
+       FLASH MESSAGES
+  ====================================================== -->
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <div class="flash-container">
+        {% for category, message in messages %}
+          <div class="alert alert-{{ 'success' if category == 'success' else ('danger' if category == 'error' else 'info') }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% endwith %}
+
+  <!-- ======================================================
+       CONTENU PRINCIPAL
+  ====================================================== -->
+  <main>
+    {% block content %}{% endblock %}
+  </main>
+
+  <!-- ======================================================
+       FOOTER
+  ====================================================== -->
+  <footer class="pt-5 pb-0 mt-5">
+    <div class="container py-4">
+      <div class="row g-4">
+        <!-- Brand column -->
+        <div class="col-lg-4 col-md-6">
+          <div class="mb-3" style="font-family:'Cormorant Garamond',serif; font-size:1.6rem; font-weight:700; color:var(--brand-gold);">
+            Cà Phê Việt
+          </div>
+          <p class="footer-slogan mb-3">Du Vietnam à votre tasse.</p>
+          <p style="font-size:0.85rem; color:rgba(245,236,215,0.65); line-height:1.8;">
+            Café Robusta des Hauts Plateaux du Đắk Lắk, sélectionné et torréfié à la main. Livraison directe en France et en Europe.
+          </p>
+          <div class="d-flex gap-2 mt-3">
+            <a href="https://instagram.com/capheviet" target="_blank" class="social-icon" title="Instagram">
+              <i class="bi bi-instagram"></i>
+            </a>
+            <a href="https://facebook.com/capheviet" target="_blank" class="social-icon" title="Facebook">
+              <i class="bi bi-facebook"></i>
+            </a>
+            <a href="mailto:contact@capheviet.fr" class="social-icon" title="Email">
+              <i class="bi bi-envelope"></i>
+            </a>
+          </div>
+        </div>
+
+        <!-- Navigation -->
+        <div class="col-lg-2 col-md-6 col-6">
+          <h5>Navigation</h5>
+          <div class="d-flex flex-column">
+            <a href="{{ url_for('index') }}">Accueil</a>
+            <a href="{{ url_for('products') }}">Nos Cafés</a>
+            <a href="{{ url_for('about') }}">Notre Histoire</a>
+            <a href="{{ url_for('cart') }}">Mon Panier</a>
+          </div>
+        </div>
+
+        <!-- Informations -->
+        <div class="col-lg-3 col-md-6 col-6">
+          <h5>Informations</h5>
+          <div class="d-flex flex-column">
+            <a href="#">Livraison & Retours</a>
+            <a href="#">FAQ</a>
+            <a href="#">Mentions légales</a>
+            <a href="#">Politique de confidentialité</a>
+            <a href="#">CGV</a>
+          </div>
+        </div>
+
+        <!-- Contact -->
+        <div class="col-lg-3 col-md-6">
+          <h5>Contact</h5>
+          <p style="font-size:0.85rem; color:rgba(245,236,215,0.65); line-height:2;">
+            <i class="bi bi-envelope me-2"></i>contact@capheviet.fr<br>
+            <i class="bi bi-telephone me-2"></i>+33 1 23 45 67 89<br>
+            <i class="bi bi-clock me-2"></i>Lun–Ven · 9h–18h<br>
+            <i class="bi bi-geo-alt me-2"></i>Paris, France
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <hr class="footer-divider mb-0">
+    <div class="footer-bottom py-3">
+      <div class="container d-flex flex-wrap align-items-center justify-content-between gap-2">
+        <span>© 2024 Cà Phê Việt — Tous droits réservés</span>
+        <span>
+          <i class="bi bi-shield-check me-1"></i>Paiement sécurisé
+          &nbsp;·&nbsp;
+          <i class="bi bi-truck me-1"></i>Livraison Express
+        </span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ======================================================
+       CHATBOT WIDGET
+  ====================================================== -->
+  <button id="chatbot-btn" title="Chattez avec nous ☕" aria-label="Ouvrir le chat">
+    ☕
+  </button>
+
+  <div id="chatbot-popup" role="dialog" aria-label="Chat Cà Phê Việt">
+    <div class="chatbot-header">
+      <span>
+        <i class="bi bi-cup-hot me-1"></i> Assistant Cà Phê Việt
+      </span>
+      <button class="close-chat" id="close-chat" aria-label="Fermer">
+        <i class="bi bi-x-lg"></i>
+      </button>
+    </div>
+
+    <div class="chatbot-messages" id="chatbot-messages">
+      <div class="msg bot">
+        Xin chào ! Bonjour 👋 Je suis l'assistant de <strong>Cà Phê Việt</strong>. Comment puis-je vous aider aujourd'hui ?
+      </div>
+    </div>
+
+    <div class="chatbot-input-row">
+      <input type="text" id="chat-input" placeholder="Votre message…" autocomplete="off">
+      <button id="chat-send" title="Envoyer"><i class="bi bi-send-fill"></i></button>
+    </div>
+  </div>
+
+  <!-- ======================================================
+       SCRIPTS
+  ====================================================== -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script>
+    /* ---------- Flash auto-dismiss ---------- */
+    document.querySelectorAll('.flash-container .alert').forEach(function(el) {
+      setTimeout(function() {
+        var alert = bootstrap.Alert.getOrCreateInstance(el);
+        alert.close();
+      }, 5000);
+    });
+
+    /* ---------- Chatbot widget ---------- */
+    const chatBtn    = document.getElementById('chatbot-btn');
+    const chatPopup  = document.getElementById('chatbot-popup');
+    const closeChat  = document.getElementById('close-chat');
+    const chatInput  = document.getElementById('chat-input');
+    const chatSend   = document.getElementById('chat-send');
+    const msgBox     = document.getElementById('chatbot-messages');
+
+    chatBtn.addEventListener('click', function() {
+      chatPopup.classList.toggle('open');
+      if (chatPopup.classList.contains('open')) chatInput.focus();
+    });
+
+    closeChat.addEventListener('click', function() {
+      chatPopup.classList.remove('open');
+    });
+
+    function appendMsg(text, role) {
+      const div = document.createElement('div');
+      div.className = 'msg ' + role;
+      div.textContent = text;
+      msgBox.appendChild(div);
+      msgBox.scrollTop = msgBox.scrollHeight;
+    }
+
+    function sendMessage() {
+      const text = chatInput.value.trim();
+      if (!text) return;
+      appendMsg(text, 'user');
+      chatInput.value = '';
+
+      // Typing indicator
+      const typing = document.createElement('div');
+      typing.className = 'msg bot';
+      typing.innerHTML = '<em style="color:var(--text-muted);">En train de répondre…</em>';
+      typing.id = 'typing-indicator';
+      msgBox.appendChild(typing);
+      msgBox.scrollTop = msgBox.scrollHeight;
+
+      fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: text })
+      })
+      .then(function(res) { return res.json(); })
+      .then(function(data) {
+        const ind = document.getElementById('typing-indicator');
+        if (ind) ind.remove();
+        appendMsg(data.reply || 'Désolé, je n\'ai pas pu répondre.', 'bot');
+      })
+      .catch(function() {
+        const ind = document.getElementById('typing-indicator');
+        if (ind) ind.remove();
+        appendMsg('Une erreur s\'est produite. Veuillez réessayer.', 'bot');
+      });
+    }
+
+    chatSend.addEventListener('click', sendMessage);
+    chatInput.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        sendMessage();
+      }
+    });
+  </script>
+
+  {% block extra_js %}{% endblock %}
+</body>
+</html>
