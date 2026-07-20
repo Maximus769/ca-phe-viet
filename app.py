@@ -215,12 +215,17 @@ def about():
 @app.route("/cart")
 def cart():
     items = []
+    subtotal = 0.0
     for pid, data in get_cart().items():
         p = db.session.get(Product, int(pid))
         if p:
-            items.append({"product": p, "qty": data["qty"],
-                          "subtotal": p.price * data["qty"]})
-    return render_template("cart.html", items=items, cart_items=items, total=cart_total())
+            line_sub = p.price * data["qty"]
+            subtotal += line_sub
+            items.append({"id": int(pid), "product": p, "qty": data["qty"], "subtotal": line_sub})
+    shipping = 0.0 if subtotal >= 40 else 4.99
+    total = subtotal + shipping
+    return render_template("cart.html", items=items, cart_items=items,
+                           total=total, subtotal=subtotal, shipping=shipping, discount=0)
 
 @app.route("/cart/add/<int:pid>", methods=["POST"])
 def cart_add(pid):

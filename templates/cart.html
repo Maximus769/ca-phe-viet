@@ -128,7 +128,7 @@
 
               <!-- Supprimer -->
               <div style="flex:0 0 40px; text-align:right;">
-                <a href="{{ url_for('cart_remove', item_id=item.id) }}"
+                <a href="{{ url_for('cart_remove', pid=item.id) }}"
                    title="Supprimer"
                    onclick="return confirm('Retirer ce produit du panier ?')"
                    style="color:rgba(74,44,23,0.35); font-size:1.1rem; text-decoration:none;
@@ -162,7 +162,7 @@
           <h5 style="color:var(--brand-brown); font-size:1rem; margin-bottom:0.75rem;">
             <i class="bi bi-tag me-1" style="color:var(--brand-gold);"></i>Code promo
           </h5>
-          <form class="d-flex gap-2" method="POST" action="{{ url_for('apply_coupon') if 'apply_coupon' in dir() else '#' }}">
+          <form class="d-flex gap-2" method="POST" action="#">
             <input type="text" name="coupon" placeholder="Entrez votre code…"
                    class="form-control" style="border-color:rgba(74,44,23,0.25); border-radius:0; font-size:0.9rem; max-width:240px;">
             <button type="submit" class="btn-outline-brand btn py-2 px-3">
