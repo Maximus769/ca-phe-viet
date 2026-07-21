@@ -77,6 +77,20 @@ class Review(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.datetime.utcnow)
     product    = db.relationship("Product")
 
+class Lead(db.Model):
+    id         = db.Column(db.Integer, primary_key=True)
+    email      = db.Column(db.String(150), nullable=False)
+    source     = db.Column(db.String(60), default="waitlist")
+    created_at = db.Column(db.DateTime, default=datetime.datetime.utcnow)
+
+class PreOrder(db.Model):
+    id         = db.Column(db.Integer, primary_key=True)
+    email      = db.Column(db.String(150), nullable=False)
+    sku        = db.Column(db.String(60), nullable=False)
+    qty        = db.Column(db.Integer, default=1)
+    status     = db.Column(db.String(30), default="pending")
+    created_at = db.Column(db.DateTime, default=datetime.datetime.utcnow)
+
 # ─── EMAIL ───────────────────────────────────────────────────────────────────
 
 def _email_cfg():
@@ -402,6 +416,58 @@ def admin_reviews():
     admin_required()
     reviews = Review.query.order_by(Review.created_at.desc()).all()
     return render_template("admin_reviews.html", reviews=reviews)
+
+# ─── CORS helper ─────────────────────────────────────────────────────────────
+
+def _cors(resp):
+    resp.headers["Access-Control-Allow-Origin"] = "*"
+    resp.headers["Access-Control-Allow-Methods"] = "GET,POST,OPTIONS"
+    resp.headers["Access-Control-Allow-Headers"] = "Content-Type"
+    return resp
+
+@app.route("/health")
+def health():
+    return _cors(jsonify({"status": "ok", "brand": "ANNAM"}))
+
+@app.route("/leads", methods=["POST", "OPTIONS"])
+def api_leads():
+    if request.method == "OPTIONS":
+        return _cors(jsonify({}))
+    data = request.get_json(force=True, silent=True) or {}
+    email = data.get("email", "").strip().lower()
+    if not email:
+        return _cors(jsonify({"error": "email required"})), 400
+    lead = Lead(email=email, source=data.get("source", "waitlist"))
+    db.session.add(lead)
+    db.session.commit()
+    return _cors(jsonify({"ok": True, "id": lead.id}))
+
+@app.route("/orders", methods=["POST", "OPTIONS"])
+def api_orders():
+    if request.method == "OPTIONS":
+        return _cors(jsonify({}))
+    data = request.get_json(force=True, silent=True) or {}
+    email = data.get("email", "").strip().lower()
+    sku   = data.get("sku", "").strip()
+    if not email or not sku:
+        return _cors(jsonify({"error": "email and sku required"})), 400
+    po = PreOrder(email=email, sku=sku, qty=int(data.get("qty", 1)))
+    db.session.add(po)
+    db.session.commit()
+    return _cors(jsonify({"ok": True, "id": po.id, "ref": f"ANNAM-{po.id:04d}"}))
+
+@app.route("/api/products")
+def api_products():
+    ANNAM = [
+        {"sku": "PURE_AROMA", "name": "Pure Aroma",  "price": 32, "badge": "Floral"},
+        {"sku": "HIGH_KICK",  "name": "High Kick",   "price": 28, "badge": "Puissant"},
+        {"sku": "RUM_BLEND",  "name": "Rum Blend",   "price": 35, "badge": "Signature ★"},
+    ]
+    return _cors(jsonify(ANNAM))
+
+@app.route("/leads/count")
+def api_leads_count():
+    return _cors(jsonify({"count": Lead.query.count()}))
 
 # ─── SEED DATA ───────────────────────────────────────────────────────────────
 
