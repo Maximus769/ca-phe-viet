@@ -5,12 +5,11 @@ Flask + SQLite/PostgreSQL
 Endpoints: orders, leads, admin, email notifications
 """
 
-import os, json, datetime, smtplib, secrets, csv, io
+import os, datetime, secrets, csv, io
 from pathlib import Path
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
 from flask import Flask, request, jsonify, render_template_string, Response, abort
 from flask_sqlalchemy import SQLAlchemy
+import resend
 
 BASE_DIR = Path(__file__).parent
 app = Flask(__name__)
@@ -25,6 +24,8 @@ db = SQLAlchemy(app)
 ADMIN_KEY   = os.environ.get("ADMIN_KEY", "hv2026admin")
 ADMIN_EMAIL = os.environ.get("ADMIN_EMAIL", "minhhoangle2909@gmail.com")
 SITE_URL    = os.environ.get("SITE_URL", "https://frontend-nine-lyart-63.vercel.app")
+
+resend.api_key = os.environ.get("RESEND_API_KEY", "")
 
 PRODUCTS = {
     "PURE_AROMA": {"name": "Pure Aroma",  "price": 32, "origin": "Arabica Cầu Đất · Altitude 1500m"},
@@ -70,29 +71,24 @@ class Lead(db.Model):
             "created_at": self.created_at.strftime("%Y-%m-%d %H:%M"),
         }
 
-# ─── EMAIL ───────────────────────────────────────────────────────────────────
+# ─── EMAIL (Resend) ──────────────────────────────────────────────────────────
 
-def _smtp():
-    user = os.environ.get("GMAIL_USER", "")
-    pwd  = os.environ.get("GMAIL_APP_PASSWORD", "")
-    return user, pwd
+FROM_EMAIL = "ANNAM Café <onboarding@resend.dev>"
 
-def _send(to: str, subject: str, html: str):
-    user, pwd = _smtp()
-    if not user or not pwd:
+def _send(to: str, subject: str, html: str) -> bool:
+    if not resend.api_key:
+        app.logger.warning("RESEND_API_KEY not set — email skipped")
         return False
     try:
-        msg = MIMEMultipart("alternative")
-        msg["Subject"] = subject
-        msg["From"]    = f"ANNAM Café <{user}>"
-        msg["To"]      = to
-        msg.attach(MIMEText(html, "html", "utf-8"))
-        with smtplib.SMTP_SSL("smtp.gmail.com", 465, timeout=10) as s:
-            s.login(user, pwd)
-            s.sendmail(user, to, msg.as_string())
+        resend.Emails.send({
+            "from": FROM_EMAIL,
+            "to": [to],
+            "subject": subject,
+            "html": html,
+        })
         return True
     except Exception as e:
-        app.logger.warning(f"Email error: {e}")
+        app.logger.warning(f"Resend error: {e}")
         return False
 
 def email_order_customer(order: PreOrder):
